@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="$(FluentValidationVersion)" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="$(FluentValidationVersion)" />
+    <PackageReference Include="Cronos" Version="0.7.1" />
+    <PackageReference Include="Voting.Lib.Iam" Version="$(VotingLibVersion)" />
+    <PackageReference Include="Riok.Mapperly" Version="2.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Voting.Stimmregister.EVoting.Abstractions.Adapter\Voting.Stimmregister.EVoting.Abstractions.Adapter.csproj" />
+    <ProjectReference Include="..\Voting.Stimmregister.EVoting.Abstractions.Core\Voting.Stimmregister.EVoting.Abstractions.Core.csproj" />
+    <ProjectReference Include="..\Voting.Stimmregister.EVoting.Adapter.Document\Voting.Stimmregister.EVoting.Adapter.Document.csproj" />
+    <ProjectReference Include="..\Voting.Stimmregister.EVoting.Domain\Voting.Stimmregister.EVoting.Domain.csproj" />
+  </ItemGroup>
+</Project>

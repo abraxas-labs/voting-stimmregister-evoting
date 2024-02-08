@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Voting.Stimmregister.EVoting.Adapter.Data\Voting.Stimmregister.EVoting.Adapter.Data.csproj" />
+    <ProjectReference Include="..\..\src\Voting.Stimmregister.EVoting.Domain\Voting.Stimmregister.EVoting.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Voting.Stimmregister.EVoting.WebService\Voting.Stimmregister.EVoting.WebService.csproj" />
+  </ItemGroup>
+</Project>

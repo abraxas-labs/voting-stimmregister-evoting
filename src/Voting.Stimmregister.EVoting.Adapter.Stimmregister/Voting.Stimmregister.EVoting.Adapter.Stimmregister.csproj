@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Voting.Stimmregister.EVoting.Abstractions.Adapter\Voting.Stimmregister.EVoting.Abstractions.Adapter.csproj" />
+    <ProjectReference Include="..\Voting.Stimmregister.EVoting.Abstractions.Core\Voting.Stimmregister.EVoting.Abstractions.Core.csproj" />
+    <ProjectReference Include="..\Voting.Stimmregister.EVoting.Domain\Voting.Stimmregister.EVoting.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Riok.Mapperly" Version="2.8.0" />
+  </ItemGroup>
+
+</Project>

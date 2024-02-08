@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <UserSecretsId>a59f0304-01dd-4bf9-a6dc-8e939a6dcc62</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Voting.Lib.Rest" Version="$(VotingLibVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Voting.Stimmregister.EVoting.Abstractions.Core\Voting.Stimmregister.EVoting.Abstractions.Core.csproj" />
+    <ProjectReference Include="..\Voting.Stimmregister.EVoting.Core\Voting.Stimmregister.EVoting.Core.csproj" />
+    <ProjectReference Include="..\Voting.Stimmregister.EVoting.Domain\Voting.Stimmregister.EVoting.Domain.csproj" />
+  </ItemGroup>
+</Project>

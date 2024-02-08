@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Voting.Lib.DokConnector" Version="$(VotingLibVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Voting.Stimmregister.EVoting.Abstractions.Adapter\Voting.Stimmregister.EVoting.Abstractions.Adapter.csproj" />
+    <ProjectReference Include="..\Voting.Stimmregister.EVoting.Domain\Voting.Stimmregister.EVoting.Domain.csproj" />
+  </ItemGroup>
+  
+</Project>

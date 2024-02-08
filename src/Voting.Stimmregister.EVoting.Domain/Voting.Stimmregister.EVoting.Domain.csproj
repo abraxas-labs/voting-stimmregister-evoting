@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="30.0.1" />
+    <PackageReference Include="prometheus-net" Version="8.1.1" />
+    <PackageReference Include="Voting.Lib.Iam" Version="$(VotingLibVersion)" />
+    <PackageReference Include="Voting.Lib.Scheduler" Version="$(VotingLibVersion)" />
+    <PackageReference Include="Voting.Lib.VotingExports" Version="$(VotingLibVersion)" />
+    <PackageReference Include="Voting.Lib.Database" Version="$(VotingLibVersion)" />
+  </ItemGroup>
+
+</Project>

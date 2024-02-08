@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Riok.Mapperly" Version="2.8.0" />
+    <PackageReference Include="Voting.Lib.DmDoc" Version="$(VotingLibVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Voting.Stimmregister.EVoting.Abstractions.Adapter\Voting.Stimmregister.EVoting.Abstractions.Adapter.csproj" />
+    <ProjectReference Include="..\Voting.Stimmregister.EVoting.Domain\Voting.Stimmregister.EVoting.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' != 'Release'">
+    <None Update="Mocks\*.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

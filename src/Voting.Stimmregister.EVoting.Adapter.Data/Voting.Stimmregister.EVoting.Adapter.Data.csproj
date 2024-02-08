@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="$(EfCoreVersion)" Condition="'$(Configuration)' != 'Release'" PrivateAssets="All" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.6" />
+    <PackageReference Include="Voting.Lib.Database" Version="$(VotingLibVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="DataContextFactory.cs" Condition="'$(Configuration)' == 'Release'" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Voting.Stimmregister.EVoting.Abstractions.Adapter\Voting.Stimmregister.EVoting.Abstractions.Adapter.csproj" />
+    <ProjectReference Include="..\Voting.Stimmregister.EVoting.Domain\Voting.Stimmregister.EVoting.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
