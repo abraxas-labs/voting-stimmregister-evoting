@@ -279,7 +279,7 @@ public class UnregisterTest : BaseRestTest
 
     protected override Task<HttpResponseMessage> AuthorizationTestCall(HttpClient httpClient)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Post, UnregisterApiUrl);
+        var request = new HttpRequestMessage(HttpMethod.Post, UnregisterApiUrl);
         request.Content = JsonContent.Create(
             new RegisterRequest
             {

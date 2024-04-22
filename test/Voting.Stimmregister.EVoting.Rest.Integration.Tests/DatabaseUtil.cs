@@ -12,6 +12,7 @@ public static class DatabaseUtil
 {
     private static bool _migrated;
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Security", "EF1002:Risk of vulnerability to SQL injection.", Justification = "Only hardened table names used.")]
     public static async Task Truncate(DataContext db)
     {
         // on the first run, we migrate the database to ensure the same structure as the "real" DB

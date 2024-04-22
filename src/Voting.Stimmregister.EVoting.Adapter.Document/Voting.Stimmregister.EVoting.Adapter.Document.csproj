@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <PackageReference Include="Riok.Mapperly" Version="2.8.0" />
+    <PackageReference Include="Riok.Mapperly" Version="3.4.0" />
     <PackageReference Include="Voting.Lib.DmDoc" Version="$(VotingLibVersion)" />
   </ItemGroup>
 

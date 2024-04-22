@@ -53,9 +53,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Voting.Stimmregister.EVotin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Voting.Stimmregister.EVoting.WebService", "src\Voting.Stimmregister.EVoting.WebService\Voting.Stimmregister.EVoting.WebService.csproj", "{848190E7-EF14-4A39-9737-7551B7C5A363}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voting.Stimmregister.EVoting.Adapter.DokConnector", "src\Voting.Stimmregister.EVoting.Adapter.DokConnector\Voting.Stimmregister.EVoting.Adapter.DokConnector.csproj", "{482A13F3-5D8E-4C5A-AB95-D8E6C7F19DAC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Voting.Stimmregister.EVoting.Adapter.DokConnector", "src\Voting.Stimmregister.EVoting.Adapter.DokConnector\Voting.Stimmregister.EVoting.Adapter.DokConnector.csproj", "{482A13F3-5D8E-4C5A-AB95-D8E6C7F19DAC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voting.Stimmregister.EVoting.Rest.Integration.Tests", "test\Voting.Stimmregister.EVoting.Rest.Integration.Tests\Voting.Stimmregister.EVoting.Rest.Integration.Tests.csproj", "{E54791D4-1CAB-41AB-A810-6D6B3B73F0EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Voting.Stimmregister.EVoting.Rest.Integration.Tests", "test\Voting.Stimmregister.EVoting.Rest.Integration.Tests\Voting.Stimmregister.EVoting.Rest.Integration.Tests.csproj", "{E54791D4-1CAB-41AB-A810-6D6B3B73F0EB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

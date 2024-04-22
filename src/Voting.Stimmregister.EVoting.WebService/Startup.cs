@@ -36,7 +36,7 @@ public class Startup
     public Startup(IConfiguration configuration)
     {
         _configuration = configuration;
-        AppConfig = configuration.Get<AppConfig>();
+        AppConfig = configuration.Get<AppConfig>()!;
     }
 
     protected AppConfig AppConfig { get; }
@@ -117,7 +117,7 @@ public class Startup
         });
 
     protected virtual void ConfigureDatabase(DbContextOptionsBuilder db)
-        => db.UseNpgsql(AppConfig.Database.ConnectionString);
+        => db.UseNpgsql(AppConfig.Database.ConnectionString, o => o.SetPostgresVersion(AppConfig.Database.Version));
 
     /// <summary>
     /// Force using german for speaking fluent validation errors for the user.

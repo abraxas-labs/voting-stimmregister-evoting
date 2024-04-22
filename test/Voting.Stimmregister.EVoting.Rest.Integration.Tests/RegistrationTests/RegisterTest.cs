@@ -297,7 +297,7 @@ public class RegisterTest : BaseRestTest
 
     protected override Task<HttpResponseMessage> AuthorizationTestCall(HttpClient httpClient)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Post, RegisterApiUrl);
+        var request = new HttpRequestMessage(HttpMethod.Post, RegisterApiUrl);
         request.Content = JsonContent.Create(
             new RegisterRequest
             {
