@@ -1,4 +1,4 @@
-# ✨ Changelog (`v2.0.5`)
+# ✨ Changelog (`v2.0.9`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v2.0.5
-Previous version ---- v2.0.3
+This version -------- v2.0.9
+Previous version ---- v2.0.5
 Initial version ----- v1.9.10
-Total commits ------- 3
+Total commits ------- 4
 ```
+
+## [v2.0.9] - 2024-09-03
+
+### 🔄 Changed
+
+- migrate from gcr to harbor
+
+## [v2.0.8] - 2024-08-27
+
+### 🔄 Changed
+
+- update bug bounty template reference
+- patch ci-cd template version, align with new defaults
+
+## [v2.0.7] - 2024-07-15
+
+### 🔒 Security
+
+- upgrade npgsql to fix vulnerability CVE-2024-0057
+
+## [v2.0.6] - 2024-07-04
+
+### 🔄 Changed
+
+- update voting library to implement case-insensitivity for headers as per RFC-2616
 
 ## [v2.0.5] - 2024-06-03
 

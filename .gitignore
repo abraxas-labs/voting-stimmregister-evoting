@@ -1,0 +1,42 @@
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+artifacts/
+
+# Visual Studio  cache/options directory
+.vs/
+
+# Testing results
+coverage.json
+coverage.info
+junit-test-reports.xml
+
+# Import Client Files
+tools/Voting.Stimmregister.ImportClient/Files/DomainOfInfluence
+tools/Voting.Stimmregister.ImportClient/Files/People
+
+# Anonymizer Files
+tools/Voting.Stimmregister.Anonymizer/Files/Source/PersonCobra
+tools/Voting.Stimmregister.Anonymizer/Files/Target/PersonCobra
+tools/Voting.Stimmregister.Anonymizer/Files/Source/PersonLoganto
+tools/Voting.Stimmregister.Anonymizer/Files/Target/PersonLoganto
+
+# Logs
+logs/
+
+# import data queue
+src/Voting.Stimmregister.WebService/import-queue-data
