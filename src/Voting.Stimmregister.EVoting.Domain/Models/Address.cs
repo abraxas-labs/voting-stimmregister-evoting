@@ -7,6 +7,8 @@ public class Address
 {
     public string Street { get; set; } = string.Empty;
 
+    public string PostOfficeBoxText { get; set; } = string.Empty;
+
     public string HouseNumber { get; set; } = string.Empty;
 
     public string Town { get; set; } = string.Empty;

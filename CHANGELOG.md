@@ -1,4 +1,4 @@
-# ✨ Changelog (`v2.0.9`)
+# ✨ Changelog (`v2.1.1`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v2.0.9
-Previous version ---- v2.0.5
+This version -------- v2.1.1
+Previous version ---- v2.0.9
 Initial version ----- v1.9.10
-Total commits ------- 4
+Total commits ------- 5
 ```
+
+## [v2.1.1] - 2025-01-24
+
+### ❌ Removed
+
+- removed TotalNumOfVoters setting
+
+## [v2.1.0] - 2025-01-13
+
+### 🔄 Changed
+
+- consider live e-voting limits
+
+## [v2.0.11] - 2024-11-25
+
+### 🔄 Changed
+
+- optimize SourceLink integration and use new ci/cd versioning capabilities
+- prevent duplicated commit ids in product version, only use SourceLink plugin.
+- extend .dockerignore file with additional exclusions
+
+## [v2.0.10] - 2024-10-10
+
+### 🔄 Changed
+
+- apply post office box text for the address if street is not set
 
 ## [v2.0.9] - 2024-09-03
 

@@ -28,4 +28,21 @@ internal static partial class TemplateMapper
     [MapperIgnoreSource(nameof(PersonEntity.StatusChange))]
     [MapperIgnoreSource(nameof(PersonEntity.Id))]
     internal static partial Person MapToPerson(PersonEntity personEntity);
+
+    [MapperIgnoreSource(nameof(AddressEntity.PostOfficeBoxText))]
+    internal static partial Models.Address MapToAddress(AddressEntity addressEntity);
+
+    [UserMapping(Default = true)]
+    internal static Models.Address CustomMapToAddress(AddressEntity addressEntity)
+    {
+        var dto = MapToAddress(addressEntity);
+
+        // If the street is empty, use the post office box text
+        if (string.IsNullOrEmpty(dto.Street))
+        {
+            dto.Street = addressEntity.PostOfficeBoxText;
+        }
+
+        return dto;
+    }
 }

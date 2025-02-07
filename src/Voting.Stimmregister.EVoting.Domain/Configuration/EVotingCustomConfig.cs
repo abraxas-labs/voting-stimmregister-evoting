@@ -9,11 +9,6 @@ namespace Voting.Stimmregister.EVoting.Domain.Configuration;
 public class EVotingCustomConfig
 {
     /// <summary>
-    /// Gets or sets the total count of voters in a canton or municipality.
-    /// </summary>
-    public int TotalNumOfVoters { get; set; }
-
-    /// <summary>
     /// Gets or sets the maximum percentage of voters that are allowed to register for e-voting.
     /// </summary>
     public int MaxAllowedVotersPercent { get; set; }

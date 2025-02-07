@@ -20,6 +20,7 @@ internal static partial class EVotingMapper
         return mapped;
     }
 
+    [UserMapping(Default = true)]
     private static PersonEntity MapPerson(Person person)
     {
         var mapped = MapPersonBase(person);
@@ -28,8 +29,8 @@ internal static partial class EVotingMapper
     }
 
     [MapperIgnoreSource(nameof(EVotingInformation.Status))]
-    [MapperIgnoreSource(nameof(EVotingInformation.RegisteredEVotersInCanton))]
-    [MapperIgnoreSource(nameof(EVotingInformation.RegisteredEVotersInMunicipality))]
+    [MapperIgnoreSource(nameof(EVotingInformation.CantonStatistic))]
+    [MapperIgnoreSource(nameof(EVotingInformation.MunicipalityStatistic))]
     [MapperIgnoreTarget(nameof(EVotingStatusChangeEntity.Id))]
     [MapperIgnoreTarget(nameof(EVotingStatusChangeEntity.EVotingRegistered))]
     [MapperIgnoreTarget(nameof(EVotingStatusChangeEntity.CreatedAt))]

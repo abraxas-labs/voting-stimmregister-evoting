@@ -272,6 +272,26 @@ public class RegisterTest : BaseRestTest
     }
 
     [Fact]
+    public async Task ShouldReturnErrorWhenCantonLimitReached()
+    {
+        var dateOfBirth = new DateOnly(1950, 01, 23);
+        HttpClientFactoryMock.StimmregisterInformationResponse = HttpClientFactoryMock.CreateStimmregisterInformationResponse(
+            VotingStatus.Unregistered,
+            Ahvn13MockedData.Ahvn13Valid1,
+            dateOfBirth,
+            true,
+            BfsMunicipalityMockedData.BfsAllowedForEVoting,
+            "Schweiz",
+            900);
+
+        using var resp = await Register(Ahvn13MockedData.Ahvn13Valid1Formatted, BfsCantonMockedData.BfsCantonValid, dateOfBirth);
+
+        resp.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        var content = await resp.Content.ReadFromJsonAsync<ErrorResponse>(_jsonOptions);
+        content!.ProcessStatusCode.Should().Be(ProcessStatusCode.EVotingReachedMaxAllowedVoters);
+    }
+
+    [Fact]
     public async Task ShouldReturnBadRequestWhenPassingEmptyAhvn13()
     {
         await AssertStatus(

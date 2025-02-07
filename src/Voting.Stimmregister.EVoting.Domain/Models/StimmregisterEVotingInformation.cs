@@ -16,7 +16,7 @@ public class EVotingInformation
 
     public Person Person { get; }
 
-    public int RegisteredEVotersInCanton { get; set; }
+    public BfsStatistic CantonStatistic { get; set; } = new();
 
-    public int RegisteredEVotersInMunicipality { get; set; }
+    public BfsStatistic MunicipalityStatistic { get; set; } = new();
 }

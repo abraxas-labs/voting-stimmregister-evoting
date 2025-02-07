@@ -113,7 +113,7 @@ public class EVotingService : IRegistrationService, IEVoterService
         EnsureEVotingIsEnabledForMunicipality(personIdentification.BfsCanton, municipalityBfs);
 
         // Verify maximum allowed voters on cantonal level
-        if (HasReachedMaxAllowedVoters(personIdentification.BfsCanton, stimmregisterInfo.RegisteredEVotersInCanton))
+        if (HasReachedMaxAllowedVoters(personIdentification.BfsCanton, stimmregisterInfo.CantonStatistic))
         {
             throw new EVotingValidationException(
                 $"Die maximale Anzahl berechtigter eVoting Registrationen für den Kanton mit BFS {personIdentification.BfsCanton} wurde erreicht.",
@@ -121,10 +121,10 @@ public class EVotingService : IRegistrationService, IEVoterService
         }
 
         // Verify maximum allowed voters on municipal level
-        if (HasReachedMaxAllowedVoters(municipalityBfs, stimmregisterInfo.RegisteredEVotersInMunicipality, false))
+        if (HasReachedMaxAllowedVoters(municipalityBfs, stimmregisterInfo.MunicipalityStatistic, false))
         {
             throw new EVotingValidationException(
-                $"Die maximale Anzahl berechtigter eVoting Registrationen für die Gemeidne mit BFS {municipalityBfs} wurde erreicht.",
+                $"Die maximale Anzahl berechtigter eVoting Registrationen für die Gemeinde mit BFS {municipalityBfs} wurde erreicht.",
                 ProcessStatusCode.EVotingReachedMaxAllowedVoters);
         }
 
@@ -137,8 +137,8 @@ public class EVotingService : IRegistrationService, IEVoterService
         await StoreStatusChange(stimmregisterInfo, true);
 
         DiagnosticsConfig.SetEVotingRegistrations(
-            stimmregisterInfo.RegisteredEVotersInMunicipality + 1,
-            stimmregisterInfo.RegisteredEVotersInCanton + 1,
+            stimmregisterInfo.MunicipalityStatistic.EVoterTotalCount + 1,
+            stimmregisterInfo.CantonStatistic.EVoterTotalCount + 1,
             stimmregisterInfo.Person.MunicipalityBfs,
             personIdentification.BfsCanton);
     }
@@ -169,8 +169,8 @@ public class EVotingService : IRegistrationService, IEVoterService
         await StoreStatusChange(stimmregisterInfo, false);
 
         DiagnosticsConfig.SetEVotingRegistrations(
-            stimmregisterInfo.RegisteredEVotersInMunicipality - 1,
-            stimmregisterInfo.RegisteredEVotersInCanton - 1,
+            stimmregisterInfo.MunicipalityStatistic.EVoterTotalCount - 1,
+            stimmregisterInfo.CantonStatistic.EVoterTotalCount - 1,
             stimmregisterInfo.Person.MunicipalityBfs,
             personIdentification.BfsCanton);
     }
@@ -239,7 +239,7 @@ public class EVotingService : IRegistrationService, IEVoterService
 
     private bool HasSwissNationality(Person person) => person.Nationality?.Equals(SwissNationality, StringComparison.OrdinalIgnoreCase) == true;
 
-    private bool HasReachedMaxAllowedVoters(short bfs, int registeredEvoters, bool required = true)
+    private bool HasReachedMaxAllowedVoters(short bfs, BfsStatistic bfsStatistic, bool required = true)
     {
         var settings = _eVotingConfig.CustomSettings.GetValueOrDefault(bfs.ToString());
         if (settings == null)
@@ -252,16 +252,16 @@ public class EVotingService : IRegistrationService, IEVoterService
             return false;
         }
 
-        var permittedVoterCount = settings.TotalNumOfVoters * settings.MaxAllowedVotersPercent / 100;
-        var hasReachedLimit = registeredEvoters >= permittedVoterCount;
-        var triggerAlert = registeredEvoters >= (permittedVoterCount - _eVotingConfig.AlertRegistrationLimitEVoterOffset);
+        var permittedVoterCount = bfsStatistic.VoterTotalCount * settings.MaxAllowedVotersPercent / 100;
+        var hasReachedLimit = bfsStatistic.EVoterTotalCount >= permittedVoterCount;
+        var triggerAlert = bfsStatistic.EVoterTotalCount >= (permittedVoterCount - _eVotingConfig.AlertRegistrationLimitEVoterOffset);
 
         if (triggerAlert)
         {
             DiagnosticsConfig.SetEVotingReachedMaxAllowedEVoters(
                 bfs,
-                registeredEvoters,
-                settings.TotalNumOfVoters,
+                bfsStatistic.EVoterTotalCount,
+                bfsStatistic.VoterTotalCount,
                 settings.MaxAllowedVotersPercent,
                 permittedVoterCount);
         }

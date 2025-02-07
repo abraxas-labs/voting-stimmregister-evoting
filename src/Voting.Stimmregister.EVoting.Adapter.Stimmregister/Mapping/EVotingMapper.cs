@@ -14,6 +14,7 @@ internal static partial class EVotingMapper
     [MapProperty(nameof(EVotingInformation.VotingStatus), nameof(DomainModels.EVotingInformation.Status))]
     internal static partial DomainModels.EVotingInformation MapEVotingInfo(EVotingInformation response);
 
+    [UserMapping(Default = true)]
     private static DomainModels.Person MapPerson(Person person)
     {
         var mapped = MapPersonBase(person);

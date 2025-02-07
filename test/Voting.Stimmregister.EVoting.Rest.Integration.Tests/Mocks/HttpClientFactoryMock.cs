@@ -59,8 +59,18 @@ public class HttpClientFactoryMock : IHttpClientFactory
                         },
                     },
                     VotingStatus = votingStatus,
-                    RegisteredEVotersInCanton = registeredEvotersInCanton,
-                    RegisteredEVotersInMunicipality = registeredEVotersInMunicipality,
+                    CantonStatistic = new BfsStatistic
+                    {
+                        Bfs = "17",
+                        EVoterTotalCount = registeredEvotersInCanton,
+                        VoterTotalCount = 1000,
+                    },
+                    MunicipalityStatistic = new BfsStatistic
+                    {
+                        Bfs = municipalityBfs.ToString(),
+                        EVoterTotalCount = registeredEVotersInMunicipality,
+                        VoterTotalCount = 100,
+                    },
                 }),
         };
 
