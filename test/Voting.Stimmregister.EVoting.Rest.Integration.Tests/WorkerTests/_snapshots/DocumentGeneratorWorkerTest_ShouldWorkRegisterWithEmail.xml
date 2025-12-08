@@ -1,0 +1,19 @@
+<Voting>
+  <EVotingInformation>
+    <EVotingRegistered>true</EVotingRegistered>
+    <Person>
+      <Sex>Male</Sex>
+      <OfficialName>Friedenfrau</OfficialName>
+      <FirstName>Frida</FirstName>
+      <Email>frida@test.invalid</Email>
+      <MunicipalityBfs>3</MunicipalityBfs>
+      <Address>
+        <Street>Hauptstrasse</Street>
+        <HouseNumber>3a</HouseNumber>
+        <Town>St. Gallen</Town>
+        <ZipCode>9000</ZipCode>
+      </Address>
+    </Person>
+    <Date>10. Januar 2020</Date>
+  </EVotingInformation>
+</Voting>

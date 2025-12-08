@@ -11,12 +11,14 @@ namespace Voting.Stimmregister.EVoting.Core.Mappings;
 [Mapper]
 internal static partial class EVotingMapper
 {
-    internal static EVotingStatusChangeEntity MapToStatusChange(EVotingInformation response, string contextId, DateTime timestamp)
+    internal static EVotingStatusChangeEntity MapToStatusChange(EVotingInformation response, string contextId, DateTime timestamp, string? email)
     {
         var mapped = MapToStatusChangeBase(response);
         mapped.EVotingRegistered = response.Status == EVotingStatus.Registered;
         mapped.ContextId = contextId;
         mapped.CreatedAt = timestamp;
+        mapped.Person!.Email = email;
+        mapped.Person.CantonBfs = short.Parse(response.CantonStatistic.Bfs);
         return mapped;
     }
 
@@ -44,5 +46,6 @@ internal static partial class EVotingMapper
     [MapperIgnoreTarget(nameof(PersonEntity.Ahvn13))]
     [MapperIgnoreTarget(nameof(PersonEntity.StatusChangeId))]
     [MapperIgnoreTarget(nameof(PersonEntity.StatusChange))]
+    [MapperIgnoreTarget(nameof(PersonEntity.CantonBfs))]
     private static partial PersonEntity MapPersonBase(Person person);
 }

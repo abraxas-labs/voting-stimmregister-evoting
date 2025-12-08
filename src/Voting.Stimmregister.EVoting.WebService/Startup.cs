@@ -13,6 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Prometheus;
 using Voting.Lib.Common.DependencyInjection;
+using Voting.Lib.Iam.Configuration;
+using Voting.Lib.Iam.Services;
 using Voting.Lib.Rest.Middleware;
 using Voting.Lib.Rest.Swagger.DependencyInjection;
 using Voting.Stimmregister.EVoting.Adapter.Data;
@@ -37,6 +39,7 @@ public class Startup
     {
         _configuration = configuration;
         AppConfig = configuration.Get<AppConfig>()!;
+        AppConfig.Validate();
     }
 
     protected AppConfig AppConfig { get; }
@@ -62,7 +65,9 @@ public class Startup
         services.AddSystemClock();
 
         ConfigureHealthChecks(services.AddHealthChecks());
-        ConfigureAuthentication(services.AddVotingLibIam(new() { BaseUrl = AppConfig.SecureConnectApi }));
+        ConfigureAuthentication(services.AddVotingLibIam(
+            new SecureConnectApiOptions { BaseUrl = AppConfig.SecureConnectApi },
+            new AuthStoreConfig()));
 
         // without the ApplicationParts, the REST controllers are sometimes not discovered (mainly in tests)
         services

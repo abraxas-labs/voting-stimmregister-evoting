@@ -1,0 +1,18 @@
+<Voting>
+  <EVotingInformation>
+    <EVotingRegistered>false</EVotingRegistered>
+    <Person>
+      <Sex>Male</Sex>
+      <OfficialName>Muster</OfficialName>
+      <FirstName>Max</FirstName>
+      <MunicipalityBfs>1</MunicipalityBfs>
+      <Address>
+        <Street>Hauptstrasse</Street>
+        <HouseNumber>3a</HouseNumber>
+        <Town>St. Gallen</Town>
+        <ZipCode>9000</ZipCode>
+      </Address>
+    </Person>
+    <Date>10. Januar 2020</Date>
+  </EVotingInformation>
+</Voting>

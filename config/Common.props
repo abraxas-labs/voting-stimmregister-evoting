@@ -12,7 +12,7 @@
     <FileVersion>0.0.0.1</FileVersion>
     <Version>0.0.0.1</Version>
 
-    <VotingLibVersion>12.10.1</VotingLibVersion>
+    <VotingLibVersion>19.1.0</VotingLibVersion>
     <EfCoreVersion>8.0.2</EfCoreVersion>
     <FluentValidationVersion>11.9.0</FluentValidationVersion>
   </PropertyGroup>
@@ -22,10 +22,10 @@
       <_Parameter1>Voting.Stimmregister.EVoting.Core.Unit.Tests</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
-  
+
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
     <PackageReference Include="Voting.Lib.Common" Version="$(VotingLibVersion)" />
   </ItemGroup>
 

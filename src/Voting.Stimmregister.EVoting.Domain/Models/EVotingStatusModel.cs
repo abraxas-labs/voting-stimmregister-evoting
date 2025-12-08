@@ -11,5 +11,7 @@ public class EVotingStatusModel
 
     public VotingRight Right { get; set; }
 
+    public string? Email { get; set; }
+
     public string ProcessStatusMessage { get; set; } = string.Empty;
 }

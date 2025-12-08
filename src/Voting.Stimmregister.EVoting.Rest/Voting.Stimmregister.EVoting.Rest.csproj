@@ -4,6 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Voting.Lib.Rest" Version="$(VotingLibVersion)" />
+    <PackageReference Include="Voting.Lib.Validation" Version="$(VotingLibVersion)" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Voting.Stimmregister.EVoting.Abstractions.Core\Voting.Stimmregister.EVoting.Abstractions.Core.csproj" />

@@ -3,7 +3,7 @@
 
 using System;
 using Microsoft.Extensions.DependencyInjection;
-using Voting.Lib.Iam.ServiceTokenHandling;
+using Voting.Lib.Iam.TokenHandling.ServiceToken;
 using Voting.Stimmregister.EVoting.Abstractions.Adapter.Stimmregister;
 using Voting.Stimmregister.EVoting.Adapter.Stimmregister.Configuration;
 

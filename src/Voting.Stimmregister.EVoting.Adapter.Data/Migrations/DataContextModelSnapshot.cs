@@ -81,6 +81,50 @@ namespace Voting.Stimmregister.EVoting.Adapter.Data.Migrations
                     b.ToTable("EVotingStatusChanges");
                 });
 
+            modelBuilder.Entity("Voting.Stimmregister.EVoting.Domain.Models.EmailVerificationEntry", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<long>("Ahvn13")
+                        .HasColumnType("bigint");
+
+                    b.Property<short>("BfsCanton")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("ContextId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateOnly>("DateOfBirth")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsEmailChange")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("VerificationCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Ahvn13")
+                        .IsUnique();
+
+                    b.HasIndex("ContextId")
+                        .IsUnique();
+
+                    b.ToTable("EmailVerifications");
+                });
+
             modelBuilder.Entity("Voting.Stimmregister.EVoting.Domain.Models.PersonEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -93,8 +137,14 @@ namespace Voting.Stimmregister.EVoting.Adapter.Data.Migrations
                     b.Property<bool>("AllowedToVote")
                         .HasColumnType("boolean");
 
+                    b.Property<short>("CantonBfs")
+                        .HasColumnType("smallint");
+
                     b.Property<DateOnly>("DateOfBirth")
                         .HasColumnType("date");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -138,6 +188,9 @@ namespace Voting.Stimmregister.EVoting.Adapter.Data.Migrations
 
                     b.Property<DateOnly>("Date")
                         .HasColumnType("date");
+
+                    b.Property<int>("EmailChangeCount")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 

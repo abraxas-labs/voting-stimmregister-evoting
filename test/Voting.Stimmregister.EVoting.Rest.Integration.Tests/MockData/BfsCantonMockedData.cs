@@ -8,4 +8,5 @@ public static class BfsCantonMockedData
     public const short BfsCantonValid = 17;
     public const short BfsCantonMissing = 1;
     public const short BfsCantonOutOfRange = 50;
+    public const short BfsCantonEmailRequired = 20;
 }

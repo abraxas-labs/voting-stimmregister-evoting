@@ -16,6 +16,8 @@ public class PersonEntity : BaseEntity
 
     public short MunicipalityBfs { get; set; }
 
+    public short CantonBfs { get; set; }
+
     public string? Nationality { get; set; }
 
     public DateOnly DateOfBirth { get; set; }
@@ -25,6 +27,8 @@ public class PersonEntity : BaseEntity
     public string OfficialName { get; set; } = string.Empty;
 
     public string FirstName { get; set; } = string.Empty;
+
+    public string? Email { get; set; }
 
     public AddressEntity Address { get; set; } = new();
 

@@ -17,7 +17,15 @@ public class EVotingConfig
     /// allowed number of E-Voters is reached. Depending on the scaling, subsystems will be notified early
     /// to take action.
     /// Example: Municipality with 3000 citizens and a maximum E-Voting of 30% will be notified at
-    /// the time when 850 citizens have registrered for E-Voting.
+    /// the time when 850 citizens have registered for E-Voting.
     /// </summary>
     public int AlertRegistrationLimitEVoterOffset { get; set; } = 50;
+
+    public void Validate()
+    {
+        foreach (var config in CustomSettings.Values)
+        {
+            config.Validate();
+        }
+    }
 }

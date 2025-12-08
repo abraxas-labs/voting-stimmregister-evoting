@@ -7,6 +7,7 @@
     <PackageReference Include="Voting.Lib.Scheduler" Version="$(VotingLibVersion)" />
     <PackageReference Include="Voting.Lib.VotingExports" Version="$(VotingLibVersion)" />
     <PackageReference Include="Voting.Lib.Database" Version="$(VotingLibVersion)" />
+    <PackageReference Include="Voting.Lib.UserNotifications" Version="$(VotingLibVersion)" />
   </ItemGroup>
 
 </Project>

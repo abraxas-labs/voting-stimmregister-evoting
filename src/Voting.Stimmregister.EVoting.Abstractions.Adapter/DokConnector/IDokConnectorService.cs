@@ -9,5 +9,5 @@ namespace Voting.Stimmregister.EVoting.Abstractions.Adapter.DokConnector;
 
 public interface IDokConnectorService
 {
-    Task Upload(string fileName, Stream content, CancellationToken ct);
+    Task Upload(string fileName, Stream content, string messageType, CancellationToken ct);
 }

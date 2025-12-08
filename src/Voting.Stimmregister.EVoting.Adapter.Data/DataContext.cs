@@ -27,6 +27,9 @@ public class DataContext : DbContext, IDataContext
     public DbSet<PersonEntity> Persons => Set<PersonEntity>();
 
     /// <inheritdoc />
+    public DbSet<EmailVerificationEntry> EmailVerifications => Set<EmailVerificationEntry>();
+
+    /// <inheritdoc />
     public DbSet<RateLimitEntity> RateLimits => Set<RateLimitEntity>();
 
     /// <inheritdoc />

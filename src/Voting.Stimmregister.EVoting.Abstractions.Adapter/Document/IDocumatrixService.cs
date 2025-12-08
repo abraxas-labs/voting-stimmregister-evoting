@@ -10,7 +10,7 @@ namespace Voting.Stimmregister.EVoting.Abstractions.Adapter.Document;
 
 public interface IDocumatrixService
 {
-    Task<Stream> RenderRegisteredPdf(PersonEntity person, CancellationToken ct);
+    Task<Stream> RenderRegisteredPdf(PersonEntity person, string templateSuffix, CancellationToken ct);
 
-    Task<Stream> RenderUnregisteredPdf(PersonEntity person, CancellationToken ct);
+    Task<Stream> RenderUnregisteredPdf(PersonEntity person, string templateSuffix, CancellationToken ct);
 }

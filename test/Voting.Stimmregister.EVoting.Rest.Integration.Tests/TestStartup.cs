@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Voting.Lib.Testing.Mocks;
+using Voting.Stimmregister.EVoting.Abstractions.Adapter.Document;
+using Voting.Stimmregister.EVoting.Abstractions.Adapter.DokConnector;
+using Voting.Stimmregister.EVoting.Abstractions.Core.Services;
 using Voting.Stimmregister.EVoting.Rest.Integration.Tests.Mocks;
 using Voting.Stimmregister.EVoting.WebService;
 
@@ -24,7 +27,11 @@ public class TestStartup : Startup
         services
             .AddVotingLibIamMocks()
             .RemoveHostedServices()
-            .AddSingleton<IHttpClientFactory, HttpClientFactoryMock>();
+            .AddMockedClock()
+            .AddSingleton<IHttpClientFactory, HttpClientFactoryMock>()
+            .AddMock<IDokConnectorService, DokConnectorServiceMock>()
+            .AddMock<IEmailService, EmailServiceMock>()
+            .AddMock<IPdfService, PdfServiceMock>();
     }
 
     protected override void ConfigureAuthentication(AuthenticationBuilder builder)

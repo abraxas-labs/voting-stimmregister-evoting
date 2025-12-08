@@ -34,6 +34,7 @@ public static class ServiceCollectionExtensions
         return services
             .AddDmDoc(dmDocConfig)
             .AddSingleton(dmDocConfig)
-            .AddScoped<IDocumatrixService, DocumatrixService>();
+            .AddScoped<IDocumatrixService, DocumatrixService>()
+            .AddScoped<IPdfService, DocumatrixPdfService>();
     }
 }

@@ -10,9 +10,11 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Voting.Lib.Testing.Mocks;
 using Voting.Stimmregister.EVoting.Adapter.Stimmregister.Models;
 using Voting.Stimmregister.EVoting.Domain.Converters;
 using Voting.Stimmregister.EVoting.Domain.Enums;
+using Voting.Stimmregister.EVoting.Domain.Models;
 using Voting.Stimmregister.EVoting.Rest.Integration.Tests.MockData;
 using Voting.Stimmregister.EVoting.Rest.Integration.Tests.Mocks;
 using Voting.Stimmregister.EVoting.Rest.Models.Request;
@@ -59,6 +61,113 @@ public class StatusTest : BaseRestTest
         resp.StatusCode.Should().Be(HttpStatusCode.OK);
         var content = await resp.Content.ReadFromJsonAsync<GetStatusResponse>(_jsonOptions);
         content!.VotingStatus.Should().Be(EVotingStatus.Registered);
+        content.VotingRight.Should().Be(VotingRight.Permitted);
+        content.Email.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task ShouldWorkWithEmail()
+    {
+        var dateOfBirth = new DateOnly(1950, 01, 23);
+        HttpClientFactoryMock.StimmregisterInformationResponse = HttpClientFactoryMock.CreateStimmregisterInformationResponse(
+            VotingStatus.Registered,
+            Ahvn13MockedData.Ahvn13Valid1,
+            dateOfBirth,
+            true,
+            BfsMunicipalityMockedData.BfsAllowedForEVoting,
+            email: "testmail@test.invalid");
+
+        using var resp = await AdminClient.PostAsJsonAsync(
+            StatusApiUrl,
+            new GetStatusRequest
+            {
+                Ahvn13 = Ahvn13MockedData.Ahvn13Valid1Formatted,
+                BfsCanton = BfsCantonMockedData.BfsCantonValid,
+                DateOfBirth = dateOfBirth,
+            },
+            _jsonOptions);
+
+        resp.StatusCode.Should().Be(HttpStatusCode.OK);
+        var content = await resp.Content.ReadFromJsonAsync<GetStatusResponse>(_jsonOptions);
+        content!.VotingStatus.Should().Be(EVotingStatus.Registered);
+        content.VotingRight.Should().Be(VotingRight.Permitted);
+        content.Email.Should().Be("testmail@test.invalid");
+    }
+
+    [Fact]
+    public async Task ShouldWorkWithPendingState()
+    {
+        await RunOnDb(async db =>
+        {
+            db.EmailVerifications.Add(new EmailVerificationEntry
+            {
+                Ahvn13 = Ahvn13MockedData.Ahvn13Valid1,
+                Email = "testing@example.invalid",
+                CreatedAt = MockedClock.UtcNowDate,
+            });
+            await db.SaveChangesAsync();
+        });
+
+        var dateOfBirth = new DateOnly(1950, 01, 23);
+        HttpClientFactoryMock.StimmregisterInformationResponse = HttpClientFactoryMock.CreateStimmregisterInformationResponse(
+            VotingStatus.Unregistered,
+            Ahvn13MockedData.Ahvn13Valid1,
+            dateOfBirth,
+            true,
+            BfsMunicipalityMockedData.BfsAllowedWithEmail);
+
+        using var resp = await AdminClient.PostAsJsonAsync(
+            StatusApiUrl,
+            new GetStatusRequest
+            {
+                Ahvn13 = Ahvn13MockedData.Ahvn13Valid1Formatted,
+                BfsCanton = BfsCantonMockedData.BfsCantonEmailRequired,
+                DateOfBirth = dateOfBirth,
+            },
+            _jsonOptions);
+
+        resp.StatusCode.Should().Be(HttpStatusCode.OK);
+        var content = await resp.Content.ReadFromJsonAsync<GetStatusResponse>(_jsonOptions);
+        content!.VotingStatus.Should().Be(EVotingStatus.PendingEmailVerification);
+        content.VotingRight.Should().Be(VotingRight.Permitted);
+        content.Email.Should().Be("testing@example.invalid");
+    }
+
+    [Fact]
+    public async Task ShouldWorkWithExpiredVerification()
+    {
+        await RunOnDb(async db =>
+        {
+            db.EmailVerifications.Add(new EmailVerificationEntry
+            {
+                Ahvn13 = Ahvn13MockedData.Ahvn13Valid1,
+                Email = "testing@example.invalid",
+                CreatedAt = MockedClock.UtcNowDate.AddDays(-10),
+            });
+            await db.SaveChangesAsync();
+        });
+
+        var dateOfBirth = new DateOnly(1950, 01, 23);
+        HttpClientFactoryMock.StimmregisterInformationResponse = HttpClientFactoryMock.CreateStimmregisterInformationResponse(
+            VotingStatus.Unregistered,
+            Ahvn13MockedData.Ahvn13Valid1,
+            dateOfBirth,
+            true,
+            BfsMunicipalityMockedData.BfsAllowedWithEmail);
+
+        using var resp = await AdminClient.PostAsJsonAsync(
+            StatusApiUrl,
+            new GetStatusRequest
+            {
+                Ahvn13 = Ahvn13MockedData.Ahvn13Valid1Formatted,
+                BfsCanton = BfsCantonMockedData.BfsCantonEmailRequired,
+                DateOfBirth = dateOfBirth,
+            },
+            _jsonOptions);
+
+        resp.StatusCode.Should().Be(HttpStatusCode.OK);
+        var content = await resp.Content.ReadFromJsonAsync<GetStatusResponse>(_jsonOptions);
+        content!.VotingStatus.Should().Be(EVotingStatus.Unregistered);
         content.VotingRight.Should().Be(VotingRight.Permitted);
     }
 

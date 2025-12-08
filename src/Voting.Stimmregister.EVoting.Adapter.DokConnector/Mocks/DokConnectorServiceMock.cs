@@ -25,9 +25,9 @@ public class DokConnectorServiceMock : IDokConnectorService
         Directory.CreateDirectory(OutDirectoryPath);
     }
 
-    public async Task Upload(string fileName, Stream content, CancellationToken ct)
+    public async Task Upload(string fileName, Stream content, string messageType, CancellationToken ct)
     {
-        _logger.LogDebug("Write {fileName} to {OutDirectoryPath}", fileName, OutDirectoryPath);
+        _logger.LogDebug("Write {fileName} with message type {MessageType} to {OutDirectoryPath}", fileName, messageType, OutDirectoryPath);
         var targetFilePath = Path.Combine(OutDirectoryPath, fileName);
         await using var fs = File.OpenWrite(targetFilePath);
         await content.CopyToAsync(fs, ct);

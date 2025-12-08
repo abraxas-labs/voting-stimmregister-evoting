@@ -11,6 +11,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Voting.Lib.Testing.Mocks;
+using Voting.Lib.UserNotifications;
 using Voting.Stimmregister.EVoting.Adapter.Stimmregister.Models;
 using Voting.Stimmregister.EVoting.Domain.Converters;
 using Voting.Stimmregister.EVoting.Domain.Enums;
@@ -18,6 +20,7 @@ using Voting.Stimmregister.EVoting.Domain.Models;
 using Voting.Stimmregister.EVoting.Rest.Integration.Tests.MockData;
 using Voting.Stimmregister.EVoting.Rest.Integration.Tests.Mocks;
 using Voting.Stimmregister.EVoting.Rest.Models.Request;
+using Voting.Stimmregister.EVoting.Rest.Models.Response;
 
 namespace Voting.Stimmregister.EVoting.Rest.Integration.Tests.RegistrationTests;
 
@@ -34,6 +37,14 @@ public class RegisterTest : BaseRestTest
     public RegisterTest(TestApplicationFactory factory)
         : base(factory)
     {
+    }
+
+    private List<UserNotification> SentUserNotifications => GetService<EmailServiceMock>().Sent;
+
+    public override async Task InitializeAsync()
+    {
+        await base.InitializeAsync();
+        SentUserNotifications.Clear();
     }
 
     [Fact]
@@ -57,9 +68,97 @@ public class RegisterTest : BaseRestTest
             return db.EVotingStatusChanges.AnyAsync(c =>
                 c.EVotingRegistered
                 && c.Active
-                && c.Person!.Ahvn13 == Ahvn13MockedData.Ahvn13Valid1);
+                && c.Person!.Ahvn13 == Ahvn13MockedData.Ahvn13Valid1
+                && c.Person.CantonBfs == BfsCantonMockedData.BfsCantonValid);
         });
         exists.Should().Be(true);
+    }
+
+    [Fact]
+    public async Task ShouldWorkWithEmail()
+    {
+        var dateOfBirth = new DateOnly(1950, 01, 23);
+        HttpClientFactoryMock.StimmregisterInformationResponse = HttpClientFactoryMock.CreateStimmregisterInformationResponse(
+            VotingStatus.Unregistered,
+            Ahvn13MockedData.Ahvn13Valid1,
+            dateOfBirth,
+            true,
+            BfsMunicipalityMockedData.BfsAllowedWithEmail,
+            cantonBfs: BfsCantonMockedData.BfsCantonEmailRequired);
+
+        var email = "test@example.invalid";
+        using var resp = await Register(Ahvn13MockedData.Ahvn13Valid1Formatted, BfsCantonMockedData.BfsCantonEmailRequired, dateOfBirth, email);
+
+        resp.StatusCode.Should().Be(HttpStatusCode.OK);
+        var content = await resp.Content.ReadFromJsonAsync<RegisterResponse>(_jsonOptions);
+        content!.ProcessStatusCode.Should().Be(ProcessStatusCode.SuccessWithPendingEmailVerification);
+
+        var statusChangeExists = await RunOnDb(db =>
+        {
+            return db.EVotingStatusChanges.AnyAsync(c =>
+                c.EVotingRegistered
+                && c.Active
+                && c.Person!.Ahvn13 == Ahvn13MockedData.Ahvn13Valid1
+                && c.Person.CantonBfs == BfsCantonMockedData.BfsCantonEmailRequired);
+        });
+        statusChangeExists.Should().Be(false);
+
+        var emailVerification = await RunOnDb(db => db.EmailVerifications.FirstOrDefaultAsync(x => x.Ahvn13 == Ahvn13MockedData.Ahvn13Valid1));
+        emailVerification.Should().NotBeNull();
+        emailVerification!.VerificationCode.Should().NotBeNullOrWhiteSpace();
+        emailVerification.Email.Should().Be(email);
+
+        SentUserNotifications.Should().HaveCount(1);
+        SentUserNotifications[0].RecipientEmail.Should().Be(email);
+    }
+
+    [Fact]
+    public async Task ShouldWorkWithEmailWithExistingExpiredVerification()
+    {
+        var email = "test@example.invalid";
+        await RunOnDb(async db =>
+        {
+            db.EmailVerifications.Add(new EmailVerificationEntry
+            {
+                Ahvn13 = Ahvn13MockedData.Ahvn13Valid1,
+                Email = email,
+                CreatedAt = MockedClock.UtcNowDate.AddDays(-10),
+            });
+            await db.SaveChangesAsync();
+        });
+
+        var dateOfBirth = new DateOnly(1950, 01, 23);
+        HttpClientFactoryMock.StimmregisterInformationResponse = HttpClientFactoryMock.CreateStimmregisterInformationResponse(
+            VotingStatus.Unregistered,
+            Ahvn13MockedData.Ahvn13Valid1,
+            dateOfBirth,
+            true,
+            BfsMunicipalityMockedData.BfsAllowedWithEmail);
+
+        using var resp = await Register(Ahvn13MockedData.Ahvn13Valid1Formatted, BfsCantonMockedData.BfsCantonEmailRequired, dateOfBirth, email);
+
+        resp.StatusCode.Should().Be(HttpStatusCode.OK);
+        var content = await resp.Content.ReadFromJsonAsync<RegisterResponse>(_jsonOptions);
+        content!.ProcessStatusCode.Should().Be(ProcessStatusCode.SuccessWithPendingEmailVerification);
+
+        var statusChangeExists = await RunOnDb(db =>
+        {
+            return db.EVotingStatusChanges.AnyAsync(c =>
+                c.EVotingRegistered
+                && c.Active
+                && c.Person!.Ahvn13 == Ahvn13MockedData.Ahvn13Valid1);
+        });
+        statusChangeExists.Should().Be(false);
+
+        var emailVerification = await RunOnDb(db => db.EmailVerifications.FirstOrDefaultAsync(x =>
+            x.Ahvn13 == Ahvn13MockedData.Ahvn13Valid1
+            && x.CreatedAt == MockedClock.UtcNowDate));
+        emailVerification.Should().NotBeNull();
+        emailVerification!.VerificationCode.Should().NotBeNullOrWhiteSpace();
+        emailVerification.Email.Should().Be(email);
+
+        SentUserNotifications.Should().HaveCount(1);
+        SentUserNotifications[0].RecipientEmail.Should().Be(email);
     }
 
     [Fact]
@@ -204,13 +303,31 @@ public class RegisterTest : BaseRestTest
             Ahvn13MockedData.Ahvn13Valid1,
             dateOfBirth,
             true,
-            BfsMunicipalityMockedData.BfsAllowedForEVoting);
+            BfsMunicipalityMockedData.BfsAllowedWithEmail);
 
-        using var resp = await Register(Ahvn13MockedData.Ahvn13Valid1Formatted, BfsCantonMockedData.BfsCantonValid, dateOfBirth);
+        using var resp = await Register(Ahvn13MockedData.Ahvn13Valid1Formatted, BfsCantonMockedData.BfsCantonEmailRequired, dateOfBirth, "test@example.invalid");
 
         resp.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         var content = await resp.Content.ReadFromJsonAsync<ErrorResponse>(_jsonOptions);
         content!.ProcessStatusCode.Should().Be(ProcessStatusCode.EVotingPermissionError);
+    }
+
+    [Fact]
+    public async Task ShouldReturnErrorWhenEmailMissing()
+    {
+        var dateOfBirth = new DateOnly(1988, 01, 23);
+        HttpClientFactoryMock.StimmregisterInformationResponse = HttpClientFactoryMock.CreateStimmregisterInformationResponse(
+            VotingStatus.Unknown,
+            Ahvn13MockedData.Ahvn13Valid1,
+            dateOfBirth,
+            true,
+            BfsMunicipalityMockedData.BfsAllowedWithEmail);
+
+        using var resp = await Register(Ahvn13MockedData.Ahvn13Valid1Formatted, BfsCantonMockedData.BfsCantonEmailRequired, dateOfBirth);
+
+        resp.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        var content = await resp.Content.ReadFromJsonAsync<ErrorResponse>(_jsonOptions);
+        content!.ProcessStatusCode.Should().Be(ProcessStatusCode.InvalidEmailFormat);
     }
 
     [Fact]
@@ -229,6 +346,41 @@ public class RegisterTest : BaseRestTest
         resp.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         var content = await resp.Content.ReadFromJsonAsync<ErrorResponse>(_jsonOptions);
         content!.ProcessStatusCode.Should().Be(ProcessStatusCode.EVotingAlreadyRegistered);
+    }
+
+    [Fact]
+    public async Task ShouldDeleteExistingPendingEmailVerification()
+    {
+        var dateOfBirth = new DateOnly(1950, 01, 23);
+        HttpClientFactoryMock.StimmregisterInformationResponse = HttpClientFactoryMock.CreateStimmregisterInformationResponse(
+            VotingStatus.Unregistered,
+            Ahvn13MockedData.Ahvn13Valid1,
+            dateOfBirth,
+            true,
+            BfsMunicipalityMockedData.BfsAllowedWithEmail);
+
+        var email = "test@example.invalid";
+        var oldVerificationCode = "test123";
+        await RunOnDb(async db =>
+        {
+            db.EmailVerifications.Add(new EmailVerificationEntry
+            {
+                Ahvn13 = Ahvn13MockedData.Ahvn13Valid1,
+                Email = email,
+                CreatedAt = MockedClock.UtcNowDate,
+                VerificationCode = oldVerificationCode,
+            });
+            await db.SaveChangesAsync();
+        });
+
+        using var resp = await Register(Ahvn13MockedData.Ahvn13Valid1Formatted, BfsCantonMockedData.BfsCantonEmailRequired, dateOfBirth, email);
+
+        resp.StatusCode.Should().Be(HttpStatusCode.OK);
+        var content = await resp.Content.ReadFromJsonAsync<RegisterResponse>(_jsonOptions);
+        content!.ProcessStatusCode.Should().Be(ProcessStatusCode.SuccessWithPendingEmailVerification);
+
+        var newVerification = await RunOnDb(db => db.EmailVerifications.SingleAsync(v => v.Ahvn13 == Ahvn13MockedData.Ahvn13Valid1));
+        newVerification.VerificationCode.Should().NotBe(oldVerificationCode);
     }
 
     [Fact]
@@ -336,7 +488,7 @@ public class RegisterTest : BaseRestTest
         yield return "unkown";
     }
 
-    private async Task<HttpResponseMessage> Register(string ahvn13, short bfsCanton, DateOnly dateOfBirth)
+    private async Task<HttpResponseMessage> Register(string ahvn13, short bfsCanton, DateOnly dateOfBirth, string? email = null)
     {
         using var request = new HttpRequestMessage(HttpMethod.Post, RegisterApiUrl);
         request.Content = JsonContent.Create(
@@ -345,6 +497,7 @@ public class RegisterTest : BaseRestTest
                 Ahvn13 = ahvn13,
                 BfsCanton = bfsCanton,
                 DateOfBirth = dateOfBirth,
+                Email = email,
             },
             options: _jsonOptions);
         request.Headers.Add("X-Context-Id", Guid.NewGuid().ToString());

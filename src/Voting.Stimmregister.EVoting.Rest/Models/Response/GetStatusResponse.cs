@@ -10,4 +10,6 @@ public class GetStatusResponse : ProcessStatusResponseBase
     public EVotingStatus VotingStatus { get; init; }
 
     public VotingRight VotingRight { get; init; }
+
+    public string? Email { get; set; }
 }

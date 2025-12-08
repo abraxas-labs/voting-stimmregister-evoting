@@ -13,4 +13,16 @@ public class RateLimitConfig
     /// All actions (get status, register, unregister) counts towards this rate limit.
     /// </summary>
     public int RateLimitPerAhvn13PerDay { get; set; }
+
+    /// <summary>
+    /// Gets or sets the email change rate limit per AHVN13 and day.
+    /// Only changing the email counts towards this rate limit.
+    /// </summary>
+    public int EmailChangeLimitPerAhvn13PerDay { get; set; }
+
+    /// <summary>
+    /// Gets or sets the email change rate limit per AHVN13 and week.
+    /// Only changing the email counts towards this rate limit.
+    /// </summary>
+    public int EmailChangeLimitPerAhvn13PerWeek { get; set; }
 }

@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Voting.Lib.Common;
-using Voting.Stimmregister.EVoting.Abstractions.Core.Services;
+using Voting.Lib.Validation;
+using Voting.Stimmregister.EVoting.Core.Services;
 using Voting.Stimmregister.EVoting.Domain.Enums;
 using Voting.Stimmregister.EVoting.Domain.Exceptions;
 using Voting.Stimmregister.EVoting.Domain.Models;
@@ -21,13 +22,11 @@ namespace Voting.Stimmregister.EVoting.Rest.Controller;
 [AuthorizeAdmin]
 public class RegistrationController : ControllerBase
 {
-    private readonly IRegistrationService _registrationService;
-    private readonly IEVoterService _eVoterService;
+    private readonly EVoterServiceFactory _eVoterServiceFactory;
 
-    public RegistrationController(IRegistrationService registrationService, IEVoterService eVoterService)
+    public RegistrationController(EVoterServiceFactory eVoterServiceFactory)
     {
-        _registrationService = registrationService;
-        _eVoterService = eVoterService;
+        _eVoterServiceFactory = eVoterServiceFactory;
     }
 
     [HttpPost("status")]
@@ -36,14 +35,16 @@ public class RegistrationController : ControllerBase
     [SwaggerOperation(nameof(GetRegistrationStatus))]
     public async Task<GetStatusResponse> GetRegistrationStatus([FromBody] GetStatusRequest request)
     {
-        var personIdentification = ValidatePersonIdentification(request.Ahvn13, request.BfsCanton, request.DateOfBirth);
-        var evotingStatus = await _eVoterService.GetEVotingStatus(personIdentification, HttpContext.RequestAborted);
+        var personIdentification = ValidatePersonIdentification(request.Ahvn13, request.BfsCanton, request.DateOfBirth, false);
+        var eVoterService = _eVoterServiceFactory.CreateEVoterService(request.BfsCanton);
+        var evotingStatus = await eVoterService.GetEVotingStatus(personIdentification, HttpContext.RequestAborted);
 
         return new GetStatusResponse
         {
             ProcessStatusCode = ProcessStatusCode.Success,
             VotingRight = evotingStatus.Right,
             VotingStatus = evotingStatus.Status,
+            Email = evotingStatus.Email,
         };
     }
 
@@ -54,12 +55,20 @@ public class RegistrationController : ControllerBase
     [ContextRequired]
     public async Task<RegisterResponse> RegisterForEVoting([FromBody] RegisterRequest request)
     {
-        var personIdentification = ValidatePersonIdentification(request.Ahvn13, request.BfsCanton, request.DateOfBirth);
-        await _registrationService.Register(personIdentification, HttpContext.RequestAborted);
+        var eVoterService = _eVoterServiceFactory.CreateEVoterService(request.BfsCanton);
+        var personIdentification = ValidatePersonIdentification(
+            request.Ahvn13,
+            request.BfsCanton,
+            request.DateOfBirth,
+            eVoterService.EmailRequired,
+            request.Email);
+        var status = await eVoterService.Register(personIdentification, HttpContext.RequestAborted);
         return new RegisterResponse
         {
-            ProcessStatusCode = ProcessStatusCode.Success,
-            ProcessStatusMessage = "Die Anmeldung für eVoting war erfolgreich.",
+            ProcessStatusCode = status,
+            ProcessStatusMessage = status == ProcessStatusCode.SuccessWithPendingEmailVerification
+                ? "Die Anmeldung wird durchgeführt, sobald die Email-Adresse bestätigt wird."
+                : "Die Anmeldung für E-Voting war erfolgreich.",
         };
     }
 
@@ -70,8 +79,9 @@ public class RegistrationController : ControllerBase
     [ContextRequired]
     public async Task<UnregisterResponse> UnregisterFromEVoting([FromBody] UnregisterRequest request)
     {
-        var personIdentification = ValidatePersonIdentification(request.Ahvn13, request.BfsCanton, request.DateOfBirth);
-        await _registrationService.Unregister(personIdentification, HttpContext.RequestAborted);
+        var personIdentification = ValidatePersonIdentification(request.Ahvn13, request.BfsCanton, request.DateOfBirth, false);
+        var eVoterService = _eVoterServiceFactory.CreateEVoterService(request.BfsCanton);
+        await eVoterService.Unregister(personIdentification, HttpContext.RequestAborted);
         return new UnregisterResponse
         {
             ProcessStatusCode = ProcessStatusCode.Success,
@@ -79,12 +89,58 @@ public class RegistrationController : ControllerBase
         };
     }
 
-    private PersonIdentification ValidatePersonIdentification(string ahvn13, short bfs, DateOnly dateOfBirth)
+    [HttpPost("change-email")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProcessStatusResponseBase), StatusCodes.Status400BadRequest)]
+    [SwaggerOperation(nameof(ChangeEVotingEmail))]
+    [ContextRequired]
+    public async Task<ChangeEmailResponse> ChangeEVotingEmail([FromBody] ChangeEmailRequest request)
+    {
+        var eVoterService = _eVoterServiceFactory.CreateEVoterService(request.BfsCanton);
+        var personIdentification = ValidatePersonIdentification(
+            request.Ahvn13,
+            request.BfsCanton,
+            request.DateOfBirth,
+            true,
+            request.Email);
+        await eVoterService.ChangeEmail(personIdentification, HttpContext.RequestAborted);
+        return new ChangeEmailResponse
+        {
+            ProcessStatusCode = ProcessStatusCode.SuccessWithPendingEmailVerification,
+            ProcessStatusMessage = "Die Email-Adresse wird geändert, sobald die neue Email-Adresse bestätigt wird.",
+        };
+    }
+
+    [HttpPost("verify-email")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProcessStatusResponseBase), StatusCodes.Status400BadRequest)]
+    [SwaggerOperation(nameof(VerifyEmail))]
+    public async Task<VerifyEmailResponse> VerifyEmail([FromBody] VerifyEmailRequest request)
+    {
+        ValidateBfsCantonNumber(request.BfsCanton);
+
+        var eVoterService = _eVoterServiceFactory.CreateEVoterService(request.BfsCanton);
+        await eVoterService.VerifyEmail(request.Code, HttpContext.RequestAborted);
+
+        return new VerifyEmailResponse
+        {
+            ProcessStatusCode = ProcessStatusCode.Success,
+            ProcessStatusMessage = "Email erfolgreich verifiziert. Anmeldung wurde durchgeführt.",
+        };
+    }
+
+    private PersonIdentification ValidatePersonIdentification(
+        string ahvn13,
+        short bfs,
+        DateOnly dateOfBirth,
+        bool emailRequired,
+        string? email = null)
     {
         var parsedAhvn13 = ValidateAhvn13(ahvn13);
         ValidateBfsCantonNumber(bfs);
+        ValidateEmail(email, emailRequired);
 
-        return new PersonIdentification(parsedAhvn13, bfs, dateOfBirth);
+        return new PersonIdentification(parsedAhvn13, bfs, dateOfBirth, email);
     }
 
     private Ahvn13 ValidateAhvn13(string ahvn13)
@@ -109,6 +165,21 @@ public class RegistrationController : ControllerBase
             throw new EVotingValidationException(
                 $"Die BFS Kantonsnummer liegt ausserhalb des Gültigkeitsbereiches [{min}...{max}].'",
                 ProcessStatusCode.InvalidBfsCantonFormat);
+        }
+    }
+
+    private void ValidateEmail(string? email, bool required)
+    {
+        if (!required && string.IsNullOrEmpty(email))
+        {
+            return;
+        }
+
+        if (email == null || !StringValidation.EmailRegex.IsMatch(email))
+        {
+            throw new EVotingValidationException(
+                "Die Email-Adresse hat ein ungültiges Format.",
+                ProcessStatusCode.InvalidEmailFormat);
         }
     }
 }

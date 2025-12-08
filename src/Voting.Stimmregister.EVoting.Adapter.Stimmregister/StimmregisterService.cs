@@ -67,12 +67,11 @@ public class StimmregisterService : IStimmregisterService
         {
             Ahvn13 = personIdentification.Ahvn13.ToString(),
             BfsCanton = personIdentification.BfsCanton,
+            Email = personIdentification.Email,
         });
 
-        using var request = new HttpRequestMessage(HttpMethod.Post, route)
-        {
-            Content = requestContent,
-        };
+        using var request = new HttpRequestMessage(HttpMethod.Post, route);
+        request.Content = requestContent;
 
         if (_tracingService.ContextId != null)
         {

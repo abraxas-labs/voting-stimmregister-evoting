@@ -13,6 +13,8 @@ public class Person
 
     public string FirstName { get; set; } = string.Empty;
 
+    public string? Email { get; set; }
+
     public short MunicipalityBfs { get; set; }
 
     public Address? Address { get; set; }

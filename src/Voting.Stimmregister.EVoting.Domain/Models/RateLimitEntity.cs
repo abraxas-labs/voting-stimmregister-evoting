@@ -22,4 +22,9 @@ public class RateLimitEntity : BaseEntity
     /// Gets or sets the amount of actions performed.
     /// </summary>
     public int ActionCount { get; set; }
+
+    /// <summary>
+    /// Gets or sets the amount of email changes performed.
+    /// </summary>
+    public int EmailChangeCount { get; set; }
 }

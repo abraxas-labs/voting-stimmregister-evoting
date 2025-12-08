@@ -7,4 +7,5 @@ public static class BfsMunicipalityMockedData
 {
     public const short BfsAllowedForEVoting = 1;
     public const short BfsNotAllowedForEVoting = 2;
+    public const short BfsAllowedWithEmail = 3;
 }

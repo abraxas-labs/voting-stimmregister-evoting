@@ -30,6 +30,11 @@ public interface IDataContext
     DbSet<PersonEntity> Persons { get; }
 
     /// <summary>
+    /// Gets the EmailVerification table.
+    /// </summary>
+    DbSet<EmailVerificationEntry> EmailVerifications { get; }
+
+    /// <summary>
     /// Gets the RateLimits table.
     /// </summary>
     DbSet<RateLimitEntity> RateLimits { get; }

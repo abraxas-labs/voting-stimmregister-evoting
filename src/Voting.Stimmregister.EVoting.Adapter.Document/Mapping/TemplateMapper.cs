@@ -11,16 +11,18 @@ namespace Voting.Stimmregister.EVoting.Adapter.Document.Mapping;
 [Mapper]
 internal static partial class TemplateMapper
 {
-    internal static EVotingInformation MapToEVotingInformation(PersonEntity personEntity, bool registered)
+    internal static EVotingInformation MapToEVotingInformation(PersonEntity personEntity, bool registered, string date)
     {
         return new EVotingInformation
         {
             Person = MapToPerson(personEntity),
             EVotingRegistered = registered,
+            Date = date,
         };
     }
 
     [MapperIgnoreSource(nameof(PersonEntity.Ahvn13))]
+    [MapperIgnoreSource(nameof(PersonEntity.CantonBfs))]
     [MapperIgnoreSource(nameof(PersonEntity.AllowedToVote))]
     [MapperIgnoreSource(nameof(PersonEntity.Nationality))]
     [MapperIgnoreSource(nameof(PersonEntity.DateOfBirth))]

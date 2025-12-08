@@ -13,6 +13,7 @@ using Moq.Protected;
 using Voting.Stimmregister.EVoting.Adapter.Stimmregister.Models;
 using Voting.Stimmregister.EVoting.Domain.Converters;
 using Voting.Stimmregister.EVoting.Domain.Enums;
+using Voting.Stimmregister.EVoting.Rest.Integration.Tests.MockData;
 using Sex = Voting.Stimmregister.EVoting.Adapter.Stimmregister.Models.Sex;
 
 namespace Voting.Stimmregister.EVoting.Rest.Integration.Tests.Mocks;
@@ -33,7 +34,9 @@ public class HttpClientFactoryMock : IHttpClientFactory
         short municipalityBfs,
         string nationality = "Schweiz",
         int registeredEvotersInCanton = 250,
-        int registeredEVotersInMunicipality = 23)
+        int registeredEVotersInMunicipality = 23,
+        short cantonBfs = BfsCantonMockedData.BfsCantonValid,
+        string? email = null)
         => new()
         {
             StatusCode = HttpStatusCode.OK,
@@ -50,6 +53,7 @@ public class HttpClientFactoryMock : IHttpClientFactory
                         Sex = Sex.Male,
                         FirstName = "first name",
                         OfficialName = "official name",
+                        Email = email,
                         Address = new Address()
                         {
                             Street = "test street",
@@ -61,7 +65,7 @@ public class HttpClientFactoryMock : IHttpClientFactory
                     VotingStatus = votingStatus,
                     CantonStatistic = new BfsStatistic
                     {
-                        Bfs = "17",
+                        Bfs = cantonBfs.ToString(),
                         EVoterTotalCount = registeredEvotersInCanton,
                         VoterTotalCount = 1000,
                     },

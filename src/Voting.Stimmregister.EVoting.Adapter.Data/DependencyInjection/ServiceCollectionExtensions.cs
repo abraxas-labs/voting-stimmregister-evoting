@@ -50,6 +50,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IDocumentRepository, DocumentRepository>()
             .AddScoped<IRateLimitRepository, RateLimitRepository>()
             .AddScoped<IEVotingStatusChangeRepository, EVotingStatusChangeRepository>()
+            .AddScoped<IEmailVerificationRepository, EmailVerificationRepository>()
             .AddVotingLibDatabase<DataContext>();
     }
 }

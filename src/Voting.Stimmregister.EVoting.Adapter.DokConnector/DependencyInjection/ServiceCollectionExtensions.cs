@@ -2,10 +2,9 @@
 // For license information see LICENSE file
 
 using Microsoft.Extensions.DependencyInjection;
-using Voting.Lib.Iam.ServiceTokenHandling;
+using Voting.Lib.Iam.TokenHandling.ServiceToken;
 using Voting.Stimmregister.EVoting.Abstractions.Adapter.DokConnector;
 using Voting.Stimmregister.EVoting.Adapter.DokConnector.Configuration;
-
 #if DEBUG
 using Voting.Stimmregister.EVoting.Adapter.DokConnector.Mocks;
 #endif

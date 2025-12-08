@@ -4,14 +4,15 @@
 using System;
 using System.Collections.Generic;
 using Voting.Lib.Common.Net;
-using Voting.Lib.Iam.ServiceTokenHandling;
+using Voting.Lib.DmDoc.Configuration;
+using Voting.Lib.Iam.TokenHandling.ServiceToken;
 using Voting.Lib.Scheduler;
 using Voting.Stimmregister.EVoting.Adapter.Data.Configuration;
-using Voting.Stimmregister.EVoting.Adapter.Document.Configuration;
 using Voting.Stimmregister.EVoting.Adapter.DokConnector.Configuration;
 using Voting.Stimmregister.EVoting.Adapter.Stimmregister.Configuration;
 using Voting.Stimmregister.EVoting.Core.Configuration;
 using Voting.Stimmregister.EVoting.Domain.Configuration;
+using DmDocConfig = Voting.Stimmregister.EVoting.Adapter.Document.Configuration.DmDocConfig;
 
 namespace Voting.Stimmregister.EVoting.WebService.Configuration;
 
@@ -90,14 +91,14 @@ public class AppConfig
     /// <summary>
     /// Gets or sets the E-Voting settings.
     /// </summary>
-    public EVotingConfig EVoting { get; set; } = new();
+    public EVotingConfig EVoting { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets the URL to the VOTING Stimmregister service.
     /// </summary>
     public StimmregisterConfig Stimmregister { get; set; } = new();
 
-    public DmDocConfig Documatrix { get; set; } = new() { DataSerializationFormat = Lib.DmDoc.Configuration.DmDocDataSerializationFormat.Xml };
+    public DmDocConfig Documatrix { get; set; } = new() { DataSerializationFormat = DmDocDataSerializationFormat.Xml };
 
     public DocumentGeneratorConfig DocumentGenerator { get; set; } = new();
 
@@ -110,4 +111,9 @@ public class AppConfig
     public DokConnectorConfig DokConnector { get; set; } = new();
 
     public RateLimitConfig RateLimit { get; set; } = new();
+
+    public void Validate()
+    {
+        EVoting.Validate();
+    }
 }

@@ -6,6 +6,4 @@ using Voting.Lib.Common;
 
 namespace Voting.Stimmregister.EVoting.Domain.Models;
 
-public record PersonIdentification(Ahvn13 Ahvn13, short BfsCanton, DateOnly DateOfBirth)
-{
-}
+public record PersonIdentification(Ahvn13 Ahvn13, short BfsCanton, DateOnly DateOfBirth, string? Email);

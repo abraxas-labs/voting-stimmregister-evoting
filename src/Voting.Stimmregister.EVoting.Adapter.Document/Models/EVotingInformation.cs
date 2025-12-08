@@ -8,4 +8,6 @@ public class EVotingInformation
     public bool EVotingRegistered { get; set; }
 
     public Person? Person { get; set; }
+
+    public string Date { get; set; } = string.Empty;
 }

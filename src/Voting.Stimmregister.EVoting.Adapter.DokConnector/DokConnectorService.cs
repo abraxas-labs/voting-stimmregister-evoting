@@ -6,23 +6,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using Voting.Lib.DokConnector.Service;
 using Voting.Stimmregister.EVoting.Abstractions.Adapter.DokConnector;
-using Voting.Stimmregister.EVoting.Adapter.DokConnector.Configuration;
 
 namespace Voting.Stimmregister.EVoting.Adapter.DokConnector;
 
 public class DokConnectorService : IDokConnectorService
 {
     private readonly IDokConnector _dokConnector;
-    private readonly string _messageType;
 
-    public DokConnectorService(IDokConnector dokConnector, DokConnectorConfig dokConnectorConfig)
+    public DokConnectorService(IDokConnector dokConnector)
     {
         _dokConnector = dokConnector;
-        _messageType = dokConnectorConfig.MessageType;
     }
 
-    public Task Upload(string fileName, Stream content, CancellationToken ct)
+    public Task Upload(string fileName, Stream content, string messageType, CancellationToken ct)
     {
-        return _dokConnector.Upload(_messageType, fileName, content, ct);
+        return _dokConnector.Upload(messageType, fileName, content, ct);
     }
 }

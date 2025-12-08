@@ -12,4 +12,6 @@ public class StimmregisterRequest
     public string Ahvn13 { get; set; } = string.Empty;
 
     public short BfsCanton { get; set; }
+
+    public string? Email { get; set; }
 }

@@ -57,6 +57,21 @@ public static class DiagnosticsConfig
             "voting_stimmregister_evoting_oldest_active_status_change_age",
             "Age of oldest active status change in hours.");
 
+    private static readonly Counter _emailSendAttempts = Metrics
+        .CreateCounter(
+            "voting_stimmregister_evoting_email_send_attempts",
+            "Count of attempts of sending emails.");
+
+    private static readonly Counter _sentEmails = Metrics
+        .CreateCounter(
+            "voting_stimmregister_evoting_email_sent",
+            "Count of of sent emails.");
+
+    private static readonly Counter _errorEmails = Metrics
+        .CreateCounter(
+            "voting_stimmregister_evoting_email_errors",
+            "Count of errored emails.");
+
     public static void SetEVotingRegistrations(double municipalityRegistrations, double cantonRegistrations, short municipalityBfs, short cantonBfs)
     {
         _eVotingRegistrationsMunicipality.WithLabels(municipalityBfs.ToString(), cantonBfs.ToString()).Set(municipalityRegistrations);
@@ -101,5 +116,20 @@ public static class DiagnosticsConfig
     public static void SetOldestActiveStatusChangeAge(int ageInHours)
     {
         _oldestActiveStatusChangeAge.Set(ageInHours);
+    }
+
+    public static void IncreaseEmailSendAttempts()
+    {
+        _emailSendAttempts.Inc();
+    }
+
+    public static void IncreaseSentEmails()
+    {
+        _sentEmails.Inc();
+    }
+
+    public static void IncreaseEmailErrors()
+    {
+        _errorEmails.Inc();
     }
 }

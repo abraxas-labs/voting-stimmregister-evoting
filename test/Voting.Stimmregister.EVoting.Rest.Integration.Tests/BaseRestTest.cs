@@ -8,6 +8,7 @@ using Voting.Lib.Iam.Testing.AuthenticationScheme;
 using Voting.Lib.Testing;
 using Voting.Stimmregister.EVoting.Adapter.Data;
 using Voting.Stimmregister.EVoting.Domain.Authorization;
+using Voting.Stimmregister.EVoting.Rest.Integration.Tests.Mocks;
 
 namespace Voting.Stimmregister.EVoting.Rest.Integration.Tests;
 
@@ -34,6 +35,9 @@ public abstract class BaseRestTest : RestAuthorizationBaseTest<TestApplicationFa
     {
         await base.InitializeAsync();
         await ResetDb();
+        HttpClientFactoryMock.StimmregisterInformationResponse = new HttpResponseMessage();
+        HttpClientFactoryMock.StimmregisterRegisterResponse = new HttpResponseMessage();
+        HttpClientFactoryMock.StimmregisterUnregisterResponse = new HttpResponseMessage();
     }
 
     protected Task ResetDb() => RunOnDb(DatabaseUtil.Truncate);

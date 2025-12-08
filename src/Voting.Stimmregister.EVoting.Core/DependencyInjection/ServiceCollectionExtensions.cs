@@ -41,10 +41,10 @@ public static class ServiceCollectionExtensions
             .AddSingleton(documentGeneratorConfig)
             .AddSingleton(machineConfig)
             .AddSingleton(rateLimitConfig)
+            .AddScoped<EVoterServiceFactory>()
             .AddScoped<ITracingService, TracingService>()
-            .AddScoped<IEVoterService, EVotingService>()
-            .AddScoped<IRegistrationService, EVotingService>()
             .AddScoped<IRateLimitService, RateLimitService>()
+            .AddScoped<IEmailService, EmailService>()
             .AddScoped<DocumentGeneratorWorker>()
             .AddScoped<DocumentDeliveryWorker>()
             .AddScoped<MetricsWorker>();

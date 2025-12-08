@@ -15,7 +15,7 @@ public class TemplateMapperTest
     public void ShouldMapStreetWhenStreetSet()
     {
         TemplateMapper
-            .MapToEVotingInformation(CreateValidPersonEntity(p => p.Address.PostOfficeBoxText = string.Empty), true)
+            .MapToEVotingInformation(CreateValidPersonEntity(p => p.Address.PostOfficeBoxText = string.Empty), true, string.Empty)
             .Person!.Address!.Street
             .Should().Be("TestStreet");
     }
@@ -24,7 +24,7 @@ public class TemplateMapperTest
     public void ShouldMapStreetWhenStreetAndPostOfficeBoxTextSet()
     {
         TemplateMapper
-            .MapToEVotingInformation(CreateValidPersonEntity(), true)
+            .MapToEVotingInformation(CreateValidPersonEntity(), true, string.Empty)
             .Person!.Address!.Street
             .Should().Be("TestStreet");
     }
@@ -33,7 +33,7 @@ public class TemplateMapperTest
     public void ShouldMapPostOfficeBoxTextWhenStreetNotSet()
     {
         TemplateMapper
-            .MapToEVotingInformation(CreateValidPersonEntity(p => p.Address.Street = string.Empty), true)
+            .MapToEVotingInformation(CreateValidPersonEntity(p => p.Address.Street = string.Empty), true, string.Empty)
             .Person!.Address!.Street
             .Should().Be("TestPostOfficeBoxText");
     }
@@ -48,7 +48,8 @@ public class TemplateMapperTest
                     p.Address.Street = string.Empty;
                     p.Address.PostOfficeBoxText = string.Empty;
                 }),
-                true)
+                true,
+                string.Empty)
             .Person!.Address!.Street
             .Should().BeEmpty();
     }

@@ -5,4 +5,5 @@ namespace Voting.Stimmregister.EVoting.Rest.Models.Request;
 
 public class RegisterRequest : RegistrationBaseRequest
 {
+    public string? Email { get; set; }
 }

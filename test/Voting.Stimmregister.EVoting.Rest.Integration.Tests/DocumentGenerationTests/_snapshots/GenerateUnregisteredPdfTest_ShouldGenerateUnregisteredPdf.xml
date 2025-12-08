@@ -1,0 +1,18 @@
+<Voting>
+  <EVotingInformation>
+    <EVotingRegistered>false</EVotingRegistered>
+    <Person>
+      <Sex>Female</Sex>
+      <OfficialName>Musterfrau</OfficialName>
+      <FirstName>Maria</FirstName>
+      <MunicipalityBfs>3202</MunicipalityBfs>
+      <Address>
+        <Street>Im Weiler</Street>
+        <HouseNumber />
+        <Town>Andwil</Town>
+        <ZipCode>9026</ZipCode>
+      </Address>
+    </Person>
+    <Date>10. Januar 2020</Date>
+  </EVotingInformation>
+</Voting>

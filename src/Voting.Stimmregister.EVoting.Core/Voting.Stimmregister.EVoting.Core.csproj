@@ -6,6 +6,7 @@
     <PackageReference Include="Cronos" Version="0.8.4" />
     <PackageReference Include="Voting.Lib.Iam" Version="$(VotingLibVersion)" />
     <PackageReference Include="Riok.Mapperly" Version="3.6.0" />
+    <PackageReference Include="Voting.Lib.UserNotifications" Version="$(VotingLibVersion)" />
   </ItemGroup>
 
   <ItemGroup>

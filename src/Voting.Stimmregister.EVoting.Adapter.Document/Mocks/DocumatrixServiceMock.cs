@@ -15,10 +15,10 @@ public class DocumatrixServiceMock : IDocumatrixService
     private static readonly string DummyRegisteredPdfPath = Path.Combine(Path.GetDirectoryName(typeof(DocumatrixServiceMock).Assembly.Location)!, "Mocks/evoting_brief_anmeldung.pdf");
     private static readonly string DummyUnregisteredPdfPath = Path.Combine(Path.GetDirectoryName(typeof(DocumatrixServiceMock).Assembly.Location)!, "Mocks/evoting_brief_abmeldung.pdf");
 
-    public Task<Stream> RenderRegisteredPdf(PersonEntity person, CancellationToken ct) =>
+    public Task<Stream> RenderRegisteredPdf(PersonEntity person, string templateSuffix, CancellationToken ct) =>
         Task.FromResult<Stream>(File.OpenRead(DummyRegisteredPdfPath));
 
-    public Task<Stream> RenderUnregisteredPdf(PersonEntity person, CancellationToken ct) =>
+    public Task<Stream> RenderUnregisteredPdf(PersonEntity person, string templateSuffix, CancellationToken ct) =>
         Task.FromResult<Stream>(File.OpenRead(DummyUnregisteredPdfPath));
 }
 #endif

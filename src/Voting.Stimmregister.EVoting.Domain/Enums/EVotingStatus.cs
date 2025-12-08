@@ -22,4 +22,9 @@ public enum EVotingStatus
     /// Voter has unregistered for e-voting.
     /// </summary>
     Unregistered = 2,
+
+    /// <summary>
+    /// Voter has registered for e-voting, but must first verify his email for it to take effect.
+    /// </summary>
+    PendingEmailVerification = 3,
 }

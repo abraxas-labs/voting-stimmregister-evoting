@@ -12,6 +12,7 @@ using Voting.Stimmregister.EVoting.Abstractions.Adapter.Data.DataContexts;
 using Voting.Stimmregister.EVoting.Abstractions.Adapter.Data.Repositories;
 using Voting.Stimmregister.EVoting.Abstractions.Adapter.Document;
 using Voting.Stimmregister.EVoting.Core.Configuration;
+using Voting.Stimmregister.EVoting.Domain.Configuration;
 using Voting.Stimmregister.EVoting.Domain.Models;
 
 namespace Voting.Stimmregister.EVoting.Core.Services;
@@ -29,6 +30,7 @@ public class DocumentGeneratorWorker
     private readonly MachineConfig _machineConfig;
     private readonly IDataContext _dataContext;
     private readonly ILogger<DocumentGeneratorWorker> _logger;
+    private readonly EVotingConfig _eVotingConfig;
 
     public DocumentGeneratorWorker(
         IEVotingStatusChangeRepository statusChangeRepository,
@@ -38,7 +40,8 @@ public class DocumentGeneratorWorker
         DocumentGeneratorConfig documentGeneratorConfig,
         MachineConfig machineConfig,
         IDataContext dataContext,
-        ILogger<DocumentGeneratorWorker> logger)
+        ILogger<DocumentGeneratorWorker> logger,
+        EVotingConfig eVotingConfig)
     {
         _statusChangeRepository = statusChangeRepository;
         _documatrixService = documatrixService;
@@ -48,9 +51,10 @@ public class DocumentGeneratorWorker
         _machineConfig = machineConfig;
         _dataContext = dataContext;
         _logger = logger;
+        _eVotingConfig = eVotingConfig;
     }
 
-    internal async Task Run(CancellationToken ct)
+    public async Task Run(CancellationToken ct)
     {
         while (!ct.IsCancellationRequested && await GenerateDocuments(ct))
         {
@@ -95,9 +99,15 @@ public class DocumentGeneratorWorker
     private async Task<DocumentEntity> GenerateDocument(EVotingStatusChangeEntity statusChange, CancellationToken ct)
     {
         _logger.LogDebug("Generating PDF for ContextId {ContextId}...", statusChange.ContextId);
+
+        if (!_eVotingConfig.CustomSettings.TryGetValue(statusChange.Person!.CantonBfs.ToString(), out var cantonSettings))
+        {
+            throw new InvalidOperationException($"Could not find custom e-voting configuration for canton BFS {statusChange.Person!.CantonBfs}");
+        }
+
         var pdfStream = statusChange.EVotingRegistered
-            ? await _documatrixService.RenderRegisteredPdf(statusChange.Person!, ct)
-            : await _documatrixService.RenderUnregisteredPdf(statusChange.Person!, ct);
+            ? await _documatrixService.RenderRegisteredPdf(statusChange.Person!, cantonSettings.TemplateSuffix, ct)
+            : await _documatrixService.RenderUnregisteredPdf(statusChange.Person!, cantonSettings.TemplateSuffix, ct);
         _logger.LogDebug("Successfully generated PDF for ContextId {ContextId}", statusChange.ContextId);
 
         await using var ms = new MemoryStream();

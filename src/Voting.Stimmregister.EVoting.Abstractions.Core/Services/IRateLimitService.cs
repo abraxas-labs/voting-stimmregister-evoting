@@ -19,4 +19,12 @@ public interface IRateLimitService
     /// <param name="ct">The cancellation token.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     Task CheckAndIncreaseRateLimit(Ahvn13 ahvn13, CancellationToken ct);
+
+    /// <summary>
+    /// Checks that the email change rate limit for the AHVN13 has not been reached and increases it.
+    /// </summary>
+    /// <param name="ahvn13">The AHVN13 to check.</param>
+    /// <param name="ct">The cancellation token.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    Task CheckAndIncreaseEmailChangeRateLimit(Ahvn13 ahvn13, CancellationToken ct);
 }
