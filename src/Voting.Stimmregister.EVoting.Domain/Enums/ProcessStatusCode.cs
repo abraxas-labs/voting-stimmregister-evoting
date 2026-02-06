@@ -107,39 +107,4 @@ public enum ProcessStatusCode
     /// The email change rate limit has been exceeded.
     /// </summary>
     EmailChangeRateLimitExceeded = 421,
-
-    /// <summary>
-    /// Loganto organisation unit not found.
-    /// </summary>
-    LogantoOrganisationUnitNotFound = 430,
-
-    /// <summary>
-    /// Loganto service request error.
-    /// </summary>
-    LogantoServiceRequestError = 431,
-
-    /// <summary>
-    /// Loganto service data error.
-    /// </summary>
-    LogantoServiceDataError = 432,
-
-    /// <summary>
-    /// Loganto service business error.
-    /// </summary>
-    LogantoServiceBusinessError = 433,
-
-    /// <summary>
-    /// KEWR service request error.
-    /// </summary>
-    KewrServiceRequestError = 450,
-
-    /// <summary>
-    /// KEWR Service data error.
-    /// </summary>
-    KewrServiceDataError = 451,
-
-    /// <summary>
-    /// KEWR Service person error.
-    /// </summary>
-    KewrServicePersonError = 452,
 }

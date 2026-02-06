@@ -202,7 +202,7 @@ public class StatusTest : BaseRestTest
     {
         HttpClientFactoryMock.StimmregisterInformationResponse = HttpClientFactoryMock.CreateErrorResponse(
             HttpStatusCode.InternalServerError,
-            ProcessStatusCode.KewrServiceRequestError);
+            ProcessStatusCode.EVotingPermissionError);
 
         using var resp = await AdminClient.PostAsJsonAsync(
             StatusApiUrl,
@@ -216,7 +216,7 @@ public class StatusTest : BaseRestTest
 
         resp.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         var content = await resp.Content.ReadFromJsonAsync<ErrorResponse>(_jsonOptions);
-        content!.ProcessStatusCode.Should().Be(ProcessStatusCode.KewrServiceRequestError);
+        content!.ProcessStatusCode.Should().Be(ProcessStatusCode.EVotingPermissionError);
     }
 
     [Fact]

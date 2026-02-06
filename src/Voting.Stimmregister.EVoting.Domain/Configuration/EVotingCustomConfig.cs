@@ -30,7 +30,7 @@ public class EVotingCustomConfig
 
     public TimeSpan EmailVerificationValidity { get; set; } = TimeSpan.FromDays(1);
 
-    public int EmailVerificationCodeLength { get; set; } = 20;
+    public int EmailVerificationCodeLength { get; set; } = 16;
 
     public string TemplateSuffix { get; set; } = string.Empty;
 

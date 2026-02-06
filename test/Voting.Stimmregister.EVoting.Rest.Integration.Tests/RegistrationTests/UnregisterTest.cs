@@ -306,13 +306,13 @@ public class UnregisterTest : BaseRestTest
             true,
             BfsMunicipalityMockedData.BfsAllowedForEVoting);
         HttpClientFactoryMock.StimmregisterUnregisterResponse =
-            HttpClientFactoryMock.CreateErrorResponse(HttpStatusCode.BadRequest, ProcessStatusCode.LogantoServiceRequestError);
+            HttpClientFactoryMock.CreateErrorResponse(HttpStatusCode.BadRequest, ProcessStatusCode.EVotingPermissionError);
 
         using var resp = await Unregister(Ahvn13MockedData.Ahvn13Valid1Formatted, BfsCantonMockedData.BfsCantonValid, dateOfBirth);
 
         resp.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         var content = await resp.Content.ReadFromJsonAsync<ErrorResponse>(_jsonOptions);
-        content!.ProcessStatusCode.Should().Be(ProcessStatusCode.LogantoServiceRequestError);
+        content!.ProcessStatusCode.Should().Be(ProcessStatusCode.EVotingPermissionError);
     }
 
     [Fact]

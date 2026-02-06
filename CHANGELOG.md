@@ -1,4 +1,4 @@
-# ✨ Changelog (`v2.8.0`)
+# ✨ Changelog (`v2.8.4`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v2.8.0
+This version -------- v2.8.4
 Previous version ---- v2.1.1
 Initial version ----- v1.9.10
-Total commits ------- 11
+Total commits ------- 15
 ```
+
+## [v2.8.4] - 2026-02-06
+
+### 🔄 Changed
+
+- extend CD pipeline with enhanced bug bounty publication workflow
+
+## [v2.8.3] - 2026-01-19
+
+### ❌ Removed
+
+- remove deprecated process status error codes
+
+## [v2.8.2] - 2026-01-06
+
+### 🔒 Security
+
+- update random code generator to preserve requested entropy as defined by the input length.
+- return the normalized URL-safe Base64 encoded format of the generated code.
+
+## [v2.8.1] - 2025-12-19
+
+### 🔄 Changed
+
+- Replaced custom alphanumeric code generation with a URL-safe Base64 code generator for email verification.
+
+### 🔒 Security
+
+- Increase entropy for verification codes.
 
 ## [v2.8.0] - 2025-11-27
 
@@ -109,65 +138,54 @@ Total commits ------- 11
 
 ## [v2.0.6] - 2024-07-04
 
+### 🔄 Changed
+
+- update voting library to implement case-insensitivity for headers as per RFC-2616
+
+## [v2.0.5] - 2024-06-03
+
+### 🔄 Changed
+
+- update link to code of conduct
+
+## [v2.0.4] - 2024-05-14
+
+### 🔄 Changed
+
+- configure certificate pinning
+- use secure https communication for CONNECT document delivery
+
+## [v2.0.3] - 2024-03-13
+
+### :lock: Security
+
+- dependency and runtime patch policy
+- use latest dotnet runtime v8.0.3
+
+## [v2.0.2] - 2024-02-12
+
 ### 🆕 Added
 
-- add rate limiting for email changes
+- add dependency icu-libs to add support for globalization
 
-### 🆕 Added
-
-- add email logs and diagnostics
+## [v2.0.1] - 2024-02-12
 
 ### 🔄 Changed
 
-- include email in status response and improve sent emails
+- update swagger generator
 
-### 🔄 Changed
+## [v2.0.0] - 2024-02-12
 
-- use alphanumeric chars for email verification code
+BREAKING CHANGE: Updated service to .NET 8 LTS.
 
-### 🔄 Changed
+### :arrows_counterclockwise: Changed
 
-- change email endpoint
+- update to dotnet 8
 
-### 🆕 Added
+### :lock: Security
 
-- configurable connector message type and tests for workers
+- apply patch policy
 
-### 🆕 Added
+## [v1.9.10] - 2024-01-31
 
-- make document template key configurable
-
-### 🆕 Added
-
-- add configurable email verification
-
-### ❌ Removed
-
-- removed TotalNumOfVoters setting
-
-### 🔄 Changed
-
-- consider live e-voting limits
-
-### 🔄 Changed
-
-- optimize SourceLink integration and use new ci/cd versioning capabilities
-- prevent duplicated commit ids in product version, only use SourceLink plugin.
-- extend .dockerignore file with additional exclusions
-
-### 🔄 Changed
-
-- apply post office box text for the address if street is not set
-
-### 🔄 Changed
-
-- migrate from gcr to harbor
-
-### 🔄 Changed
-
-- update bug bounty template reference
-- patch ci-cd template version, align with new defaults
-
-### 🔒 Security
-
-- upgrade npgsql to fix vulnerability CVE-2024-0057
+### 🎉 Initial release for Bug Bounty

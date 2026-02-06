@@ -414,13 +414,13 @@ public class RegisterTest : BaseRestTest
             true,
             BfsMunicipalityMockedData.BfsAllowedForEVoting);
         HttpClientFactoryMock.StimmregisterRegisterResponse =
-            HttpClientFactoryMock.CreateErrorResponse(HttpStatusCode.BadRequest, ProcessStatusCode.LogantoServiceRequestError);
+            HttpClientFactoryMock.CreateErrorResponse(HttpStatusCode.BadRequest, ProcessStatusCode.EVotingPermissionError);
 
         using var resp = await Register(Ahvn13MockedData.Ahvn13Valid1Formatted, BfsCantonMockedData.BfsCantonValid, dateOfBirth);
 
         resp.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         var content = await resp.Content.ReadFromJsonAsync<ErrorResponse>(_jsonOptions);
-        content!.ProcessStatusCode.Should().Be(ProcessStatusCode.LogantoServiceRequestError);
+        content!.ProcessStatusCode.Should().Be(ProcessStatusCode.EVotingPermissionError);
     }
 
     [Fact]

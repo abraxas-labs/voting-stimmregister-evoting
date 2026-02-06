@@ -236,7 +236,7 @@ public class EVoterService : IEVoterService
         bool isEmailChange,
         CancellationToken ct)
     {
-        var verificationCode = RandomCodeGenerator.CreateRandomAlphanumericString(_cantonConfig.EmailVerificationCodeLength);
+        var verificationCode = RandomCodeGenerator.GenerateBase64UrlSafeCode(_cantonConfig.EmailVerificationCodeLength);
 
         await using var transaction = await _dataContext.BeginTransaction(IsolationLevel.Serializable);
 

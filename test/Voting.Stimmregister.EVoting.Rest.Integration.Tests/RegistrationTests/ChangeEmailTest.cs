@@ -198,13 +198,13 @@ public class ChangeEmailTest : BaseRestTest
     public async Task ShouldReturnErrorResponseWhenStimmregisterReturnsErrorCode()
     {
         var dateOfBirth = new DateOnly(1950, 01, 23);
-        HttpClientFactoryMock.StimmregisterInformationResponse = HttpClientFactoryMock.CreateErrorResponse(HttpStatusCode.BadRequest, ProcessStatusCode.LogantoServiceRequestError);
+        HttpClientFactoryMock.StimmregisterInformationResponse = HttpClientFactoryMock.CreateErrorResponse(HttpStatusCode.BadRequest, ProcessStatusCode.EVotingPermissionError);
 
         using var resp = await ChangeEmail(Ahvn13MockedData.Ahvn13Valid1Formatted, BfsCantonMockedData.BfsCantonEmailRequired, dateOfBirth, "test@test.invalid");
 
         resp.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         var content = await resp.Content.ReadFromJsonAsync<ErrorResponse>(_jsonOptions);
-        content!.ProcessStatusCode.Should().Be(ProcessStatusCode.LogantoServiceRequestError);
+        content!.ProcessStatusCode.Should().Be(ProcessStatusCode.EVotingPermissionError);
     }
 
     [Fact]
