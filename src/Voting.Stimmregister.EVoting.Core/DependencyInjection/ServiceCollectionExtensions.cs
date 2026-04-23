@@ -22,7 +22,6 @@ public static class ServiceCollectionExtensions
     /// <param name="services">The services collection.</param>
     /// <param name="eVotingConfig">The e-voting configuration.</param>
     /// <param name="documentGeneratorConfig">The document generator configuration.</param>
-    /// <param name="documentDeliveryConfig">The document delivery configuration.</param>
     /// <param name="metricsConfig">The metrics configuration.</param>
     /// <param name="machineConfig">The machine configuration.</param>
     /// <param name="rateLimitConfig">The rate limit configuration.</param>
@@ -31,7 +30,6 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         EVotingConfig eVotingConfig,
         DocumentGeneratorConfig documentGeneratorConfig,
-        ICronJobConfig documentDeliveryConfig,
         JobConfig metricsConfig,
         MachineConfig machineConfig,
         RateLimitConfig rateLimitConfig)
@@ -50,7 +48,18 @@ public static class ServiceCollectionExtensions
             .AddScoped<MetricsWorker>();
 
         services.AddCronJob<DocumentGeneratorJob>(documentGeneratorConfig);
-        services.AddCronJob<DocumentDeliveryJob>(documentDeliveryConfig);
+
+        foreach (var (cantonBfs, customConfig) in eVotingConfig.CustomSettings)
+        {
+            var deliveryConfig = new DocumentDeliveryConfig
+            {
+                CantonBfs = cantonBfs,
+                CronSchedule = customConfig.DeliveryCronSchedule,
+                CronTimeZone = customConfig.DeliveryCronTimeZone,
+            };
+            services.AddCronJob<DocumentDeliveryJob, DocumentDeliveryConfig>(deliveryConfig);
+        }
+
         services.AddScheduledJob<MetricsJob>(metricsConfig);
 
         return services;

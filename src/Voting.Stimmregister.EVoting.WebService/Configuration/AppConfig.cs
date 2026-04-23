@@ -102,8 +102,6 @@ public class AppConfig
 
     public DocumentGeneratorConfig DocumentGenerator { get; set; } = new();
 
-    public CronJobConfig DocumentDelivery { get; set; } = new();
-
     public JobConfig Metrics { get; set; } = new() { Interval = TimeSpan.FromMinutes(10) };
 
     public MachineConfig Machine { get; set; } = new();

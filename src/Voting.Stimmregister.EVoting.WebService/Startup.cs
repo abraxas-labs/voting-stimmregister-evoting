@@ -50,7 +50,6 @@ public class Startup
         services.AddCoreServices(
             AppConfig.EVoting,
             AppConfig.DocumentGenerator,
-            AppConfig.DocumentDelivery,
             AppConfig.Metrics,
             AppConfig.Machine,
             AppConfig.RateLimit);

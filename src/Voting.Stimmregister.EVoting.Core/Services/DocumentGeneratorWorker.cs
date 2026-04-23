@@ -100,7 +100,7 @@ public class DocumentGeneratorWorker
     {
         _logger.LogDebug("Generating PDF for ContextId {ContextId}...", statusChange.ContextId);
 
-        if (!_eVotingConfig.CustomSettings.TryGetValue(statusChange.Person!.CantonBfs.ToString(), out var cantonSettings))
+        if (!_eVotingConfig.CustomSettings.TryGetValue(statusChange.Person!.CantonBfs, out var cantonSettings))
         {
             throw new InvalidOperationException($"Could not find custom e-voting configuration for canton BFS {statusChange.Person!.CantonBfs}");
         }

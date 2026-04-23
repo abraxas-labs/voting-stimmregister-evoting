@@ -33,9 +33,9 @@ public class EVotingStatusChangeRepository : DbRepository<DataContext, EVotingSt
             .ToListAsync();
     }
 
-    public Task<EVotingStatusChangeEntity?> GetNextForDelivery(DateTime maxDocumentDate)
+    public Task<EVotingStatusChangeEntity?> GetNextForDelivery(DateTime maxDocumentDate, short cantonBfs)
     {
-        var rawQuery = BuildFetchAndLockSql(1, true, maxDocumentDate);
+        var rawQuery = BuildFetchAndLockSql(1, true, maxDocumentDate, cantonBfs);
         return Context.EVotingStatusChanges
             .FromSqlRaw(rawQuery)
             .Include(x => x.Document)
@@ -52,8 +52,13 @@ public class EVotingStatusChangeRepository : DbRepository<DataContext, EVotingSt
     /// <param name="batchSize">The maximum amount of status changes to return.</param>
     /// <param name="hasDocument">Whether the status change has a document.</param>
     /// <param name="maxDocumentDate">The maximum creation date of the status change document.</param>
+    /// <param name="cantonBfs">The optional canton BFS number to filter by.</param>
     /// <returns>The SQL query.</returns>
-    private string BuildFetchAndLockSql(int batchSize, bool hasDocument, DateTime? maxDocumentDate = null)
+    private string BuildFetchAndLockSql(
+        int batchSize,
+        bool hasDocument,
+        DateTime? maxDocumentDate = null,
+        short? cantonBfs = null)
     {
         var idColumnName = Set.GetDelimitedColumnName(x => x.Id);
         var activeColumnName = Set.GetDelimitedColumnName(x => x.Active);
@@ -62,24 +67,38 @@ public class EVotingStatusChangeRepository : DbRepository<DataContext, EVotingSt
         var statusChangeIdFkColumnName = Context.Documents.GetDelimitedColumnName(x => x.StatusChangeId);
         var documentDateColumnName = Context.Documents.GetDelimitedColumnName(x => x.CreatedAt);
 
+        var personTableName = Context.Persons.GetDelimitedSchemaAndTableName();
+        var personStatusChangeIdFkColumnName = Context.Persons.GetDelimitedColumnName(x => x.StatusChangeId);
+        var cantonBfsColumnName = Context.Persons.GetDelimitedColumnName(x => x.CantonBfs);
+
         var hasDocumentQuery = hasDocument
             ? "IS NOT NULL"
             : "IS NULL";
 
         var documentDateQuery = maxDocumentDate.HasValue
-            ? $"AND t2.{documentDateColumnName} < '{maxDocumentDate:u}' "
+            ? $"AND document.{documentDateColumnName} < '{maxDocumentDate:u}' "
+            : string.Empty;
+
+        var cantonBfsJoin = cantonBfs.HasValue
+            ? $"INNER JOIN {personTableName} AS person ON person.{personStatusChangeIdFkColumnName} = statusChange.{idColumnName} "
+            : string.Empty;
+
+        var cantonBfsFilter = cantonBfs.HasValue
+            ? $"AND person.{cantonBfsColumnName} = {cantonBfs.Value} "
             : string.Empty;
 
         // CAREFUL: We use a raw SQL query here, so no user supplied values should be used.
         // Otherwise, SQL injection would be possible.
-        // The currently used types (int, bool and DateTime) do not allow SQL injection
+        // The currently used types (int, short, bool and DateTime) do not allow SQL injection
         // and thus do not need to be parameterized.
-        return $"SELECT t1.* FROM {DelimitedSchemaAndTableName} AS t1 "
-            + $"LEFT JOIN {documentTableName} AS t2 ON t2.{statusChangeIdFkColumnName} = t1.{idColumnName} "
+        return $"SELECT statusChange.* FROM {DelimitedSchemaAndTableName} AS statusChange "
+            + $"LEFT JOIN {documentTableName} AS document ON document.{statusChangeIdFkColumnName} = statusChange.{idColumnName} "
+            + cantonBfsJoin
             + $"WHERE {activeColumnName} = TRUE "
-            + $"AND {statusChangeIdFkColumnName} {hasDocumentQuery} "
+            + $"AND document.{statusChangeIdFkColumnName} {hasDocumentQuery} "
             + documentDateQuery
+            + cantonBfsFilter
             + $"LIMIT {batchSize} "
-            + "FOR UPDATE OF t1 SKIP LOCKED";
+            + "FOR UPDATE OF statusChange SKIP LOCKED";
     }
 }

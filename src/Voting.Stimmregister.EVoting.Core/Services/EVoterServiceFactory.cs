@@ -23,10 +23,9 @@ public class EVoterServiceFactory
 
     public IEVoterService CreateEVoterService(short cantonBfs)
     {
-        var bfsAsString = cantonBfs.ToString();
-        if (!_evotingConfig.CustomSettings.TryGetValue(bfsAsString, out var config))
+        if (!_evotingConfig.CustomSettings.TryGetValue(cantonBfs, out var config))
         {
-            throw new InvalidOperationException($"Für den Kunden mit BFS {bfsAsString} sind keine Custom Settings verfügbar.");
+            throw new InvalidOperationException($"Für den Kunden mit BFS {cantonBfs} sind keine Custom Settings verfügbar.");
         }
 
         return _eVoterServiceFactory(_serviceProvider, [config, cantonBfs]);

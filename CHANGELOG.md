@@ -1,4 +1,4 @@
-# ✨ Changelog (`v2.8.4`)
+# ✨ Changelog (`v2.9.0`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v2.8.4
-Previous version ---- v2.1.1
+This version -------- v2.9.0
+Previous version ---- v2.8.4
 Initial version ----- v1.9.10
-Total commits ------- 15
+Total commits ------- 1
 ```
+
+## [v2.9.0] - 2026-04-23
+
+### 🆕 Added
+
+- allow tenant independent document delivery scheduling
 
 ## [v2.8.4] - 2026-02-06
 

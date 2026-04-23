@@ -7,9 +7,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Voting.Lib.Common;
+using Voting.Lib.Scheduler;
 using Voting.Stimmregister.EVoting.Abstractions.Adapter.Data.DataContexts;
 using Voting.Stimmregister.EVoting.Abstractions.Adapter.Data.Repositories;
 using Voting.Stimmregister.EVoting.Abstractions.Adapter.DokConnector;
+using Voting.Stimmregister.EVoting.Core.Configuration;
 using Voting.Stimmregister.EVoting.Domain.Configuration;
 using Voting.Stimmregister.EVoting.Domain.Diagnostics;
 using Voting.Stimmregister.EVoting.Domain.Enums;
@@ -26,6 +28,7 @@ public class DocumentDeliveryWorker
     private readonly ILogger<DocumentDeliveryWorker> _logger;
     private readonly IClock _clock;
     private readonly EVotingConfig _eVotingConfig;
+    private readonly DocumentDeliveryConfig _jobConfig;
 
     public DocumentDeliveryWorker(
         IDokConnectorService connectorService,
@@ -34,7 +37,8 @@ public class DocumentDeliveryWorker
         IDataContext dataContext,
         ILogger<DocumentDeliveryWorker> logger,
         IClock clock,
-        EVotingConfig eVotingConfig)
+        EVotingConfig eVotingConfig,
+        IJobRunnerConfigAccessor<DocumentDeliveryConfig> configAccessor)
     {
         _connectorService = connectorService;
         _statusChangeRepository = statusChangeRepository;
@@ -43,6 +47,7 @@ public class DocumentDeliveryWorker
         _logger = logger;
         _clock = clock;
         _eVotingConfig = eVotingConfig;
+        _jobConfig = configAccessor.Config;
     }
 
     public async Task Run(CancellationToken ct)
@@ -51,16 +56,16 @@ public class DocumentDeliveryWorker
         // Otherwise the job may not finish or take longer than expected.
         var now = _clock.UtcNow;
 
-        while (!ct.IsCancellationRequested && await DeliverDocuments(now, ct))
+        while (!ct.IsCancellationRequested && await DeliverDocuments(now, _jobConfig.CantonBfs, ct))
         {
-            // generate documents (see statements in while loop)
+            // deliver documents (see statements in while loop)
         }
     }
 
-    private async Task<bool> DeliverDocuments(DateTime maxDocumentDate, CancellationToken ct)
+    private async Task<bool> DeliverDocuments(DateTime maxDocumentDate, short cantonBfs, CancellationToken ct)
     {
         await using var transaction = await _dataContext.BeginTransaction();
-        var statusChange = await _statusChangeRepository.GetNextForDelivery(maxDocumentDate);
+        var statusChange = await _statusChangeRepository.GetNextForDelivery(maxDocumentDate, cantonBfs);
 
         if (statusChange == null)
         {
@@ -88,7 +93,7 @@ public class DocumentDeliveryWorker
     {
         _logger.LogDebug("Uploading document for ContextId {ContextId}...", statusChange.ContextId);
 
-        if (!_eVotingConfig.CustomSettings.TryGetValue(statusChange.Person!.CantonBfs.ToString(), out var cantonSettings))
+        if (!_eVotingConfig.CustomSettings.TryGetValue(statusChange.Person!.CantonBfs, out var cantonSettings))
         {
             throw new InvalidOperationException($"Could not find custom e-voting configuration for canton BFS {statusChange.Person!.CantonBfs}");
         }

@@ -4,6 +4,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cronos;
+using Voting.Lib.Common;
 using Voting.Lib.UserNotifications;
 
 namespace Voting.Stimmregister.EVoting.Domain.Configuration;
@@ -40,6 +42,17 @@ public class EVotingCustomConfig
 
     public string CantonName { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Gets or sets the cron schedule for this tenant's document delivery job.
+    /// </summary>
+    public string DeliveryCronSchedule { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the time zone in which the delivery cron schedule should be evaluated.
+    /// Defaults to Europe/Zurich.
+    /// </summary>
+    public string DeliveryCronTimeZone { get; set; } = DateTimeConstants.EuropeZurichTimeZoneId;
+
     public ICollection<short> EVotingEnabledMunicipalitiesList => EVotingEnabledMunicipalities
         .Split(',', StringSplitOptions.RemoveEmptyEntries)
         .Select(e => short.Parse(e.Trim()))
@@ -47,6 +60,11 @@ public class EVotingCustomConfig
 
     public void Validate()
     {
+        if (!CronExpression.TryParse(DeliveryCronSchedule, out _))
+        {
+            throw new ArgumentException($"Invalid cron expression: {DeliveryCronSchedule}", nameof(DeliveryCronSchedule));
+        }
+
         if (!RequiresEmail)
         {
             return;

@@ -10,7 +10,7 @@ namespace Voting.Stimmregister.EVoting.Domain.Configuration;
 /// </summary>
 public class EVotingConfig
 {
-    public Dictionary<string, EVotingCustomConfig> CustomSettings { get; set; } = new();
+    public Dictionary<short, EVotingCustomConfig> CustomSettings { get; set; } = new();
 
     /// <summary>
     /// Gets or sets the number of E-Voter registrations when an alert should be triggered before the max.

@@ -30,9 +30,10 @@ public interface IEVotingStatusChangeRepository : IDbRepository<DbContext, EVoti
     Task<List<EVotingStatusChangeEntity>> GetWithMissingDocuments(int batchSize);
 
     /// <summary>
-    /// Gets a status change that is due for delivery.
+    /// Gets a status change that is due for delivery for the specified tenant.
     /// </summary>
     /// <param name="maxDocumentDate">The maximum age of the generated status change document.</param>
+    /// <param name="cantonBfs">The canton BFS number identifying the tenant whose documents to deliver.</param>
     /// <returns>A status change that is due for delivery, if one exists.</returns>
-    Task<EVotingStatusChangeEntity?> GetNextForDelivery(DateTime maxDocumentDate);
+    Task<EVotingStatusChangeEntity?> GetNextForDelivery(DateTime maxDocumentDate, short cantonBfs);
 }
