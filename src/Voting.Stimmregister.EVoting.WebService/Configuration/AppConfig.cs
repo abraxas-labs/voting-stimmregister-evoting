@@ -54,7 +54,10 @@ public class AppConfig
     /// </summary>
     public Uri? SecureConnectApi { get; set; }
 
-    public SecureConnectServiceAccountOptions SharedSecureConnect { get; set; } = new();
+    /// <summary>
+    /// Gets or sets the connect service account.
+    /// </summary>
+    public SecureConnectServiceAccountOptions ConnectServiceAccount { get; set; } = new();
 
     /// <summary>
     /// Gets or sets the certificate pinning configuration.
@@ -106,7 +109,7 @@ public class AppConfig
 
     public MachineConfig Machine { get; set; } = new();
 
-    public DokConnectorConfig DokConnector { get; set; } = new();
+    public DokConnectorConfig DokConnectorApi { get; set; } = new();
 
     public RateLimitConfig RateLimit { get; set; } = new();
 

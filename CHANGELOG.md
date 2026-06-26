@@ -1,4 +1,4 @@
-# ✨ Changelog (`v2.9.0`)
+# ✨ Changelog (`v2.9.1`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v2.9.0
-Previous version ---- v2.8.4
+This version -------- v2.9.1
+Previous version ---- v2.9.0
 Initial version ----- v1.9.10
 Total commits ------- 1
 ```
+
+## [v2.9.1] - 2026-06-26
+
+### 🔄 Changed
+
+- migrate from connect uploader to connect api provider
 
 ## [v2.9.0] - 2026-04-23
 

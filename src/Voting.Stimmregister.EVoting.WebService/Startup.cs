@@ -57,7 +57,7 @@ public class Startup
         services.AddAdapterDataServices(AppConfig.Database, ConfigureDatabase);
         services.AddAdapterStimmregisterServices(AppConfig.Stimmregister, AppConfig.SecureConnect.AbraxasTenantId, AppConfig.EVotingServiceAccount);
         services.AddAdapterDocumentServices(AppConfig.Documatrix);
-        services.AddAdapterDokConnector(AppConfig.DokConnector, AppConfig.SharedSecureConnect);
+        services.AddAdapterDokConnector(AppConfig.DokConnectorApi, AppConfig.ConnectServiceAccount);
 
         services.AddCertificatePinning(AppConfig.CertificatePinning);
         services.AddVotingLibPrometheusAdapter(new() { Interval = AppConfig.PrometheusAdapterInterval });

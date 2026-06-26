@@ -28,7 +28,7 @@ public static class ServiceCollectionExtensions
         services
             .AddSingleton(dokConnectorConfig)
             .AddScoped<IDokConnectorService, DokConnectorService>()
-            .AddEaiDokConnector(dokConnectorConfig)
+            .AddDokConnectorApi(dokConnectorConfig)
             .AddSecureConnectServiceToken(serviceAccountOptions);
 
         return services;
